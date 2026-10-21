@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Estado local del navegador / herramientas
+.agent-browser/
+
+# Referencias de trabajo (no forman parte del sitio publicado)
+/Encuentro de Tesistas_ Modelo 3D Interactivo.png
+/encuentro_tesistas_index.html
