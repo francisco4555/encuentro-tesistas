@@ -1,20 +1,6 @@
 /* ==========================================================================
-   Encuentro de Tesistas · Laboratorio territorial 3D
-   Maqueta urbana interactiva construida con Three.js (r160, vendida localmente).
-
-   Características:
-   - Rotación 360°, acercamiento/alejamiento, desplazamiento (ratón y táctil).
-   - 7 capas temáticas activables/desactivables.
-   - Selección de elementos (edificios, áreas verdes, puntos de investigación).
-   - Fichas informativas (DOM accesible, aria-live).
-   - Restablecimiento de vista y accesibilidad por teclado.
-   - Modelo DEMOSTRATIVO: no representa cartografía ni datos georreferenciados.
-
-   Integración SIG: `window.__modelo3D.cargarGeoJSON(geojson, opciones)` permite
-   incorporar datos exportados desde QGIS (ver README.md).
+   Encuentro de Tesistas · Laboratorio territorial 3D (Visual Upgrade)
    ========================================================================== */
-/* THREE se carga como script clásico (vendor/three.min.js, UMD r158) antes de
-   este archivo; la librería queda disponible en la variable global THREE. */
 (function () {
   'use strict';
 
@@ -32,22 +18,22 @@
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     };
   }
-  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(v, hi)); }
 
   /* ---------- Constantes del modelo ---------- */
-  var CITY = 6.4;                          // media extensión de la ciudad
-  var ROAD_W = 0.6;                        // ancho de calle
-  var ROAD_LINES = [-5, -2.5, 0, 2.5, 5];  // ejes de calles
+  var CITY = 6.4;
+  var ROAD_W = 0.6;
+  var ROAD_LINES = [-5, -2.5, 0, 2.5, 5];
   var R_MIN = 7, R_MAX = 26;
   var rng = mulberry32(20251021);
 
   var USO_COLOR = {
-    'Residencial': 0xcfe0c0,
-    'Comercial': 0xf0d9b5,
-    'Mixto': 0xe8c9a0,
-    'Equipamiento': 0xc3d4e0,
-    'Industrial': 0xd9d2c5,
-    'Área verde': 0x9cc89a
+    'Residencial': 0xdce3d8,
+    'Comercial': 0xf5ebd3,
+    'Mixto': 0xead1a8,
+    'Equipamiento': 0xdbe4eb,
+    'Industrial': 0xdbd5c8,
+    'Área verde': 0x8ebf8b
   };
 
   function asignarUso(bx, bz) {
@@ -59,8 +45,10 @@
   var renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.shadowMap.enabled = true; // Habilitar sombras
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   } catch (err) {
-    fallback('Tu navegador no pudo iniciar el modelo 3D (WebGL no disponible).');
+    fallback('Tu navegador no pudo iniciar el modelo 3D.');
     return;
   }
   if (!renderer.getContext()) {
@@ -70,11 +58,22 @@
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   var scene = new THREE.Scene();
+  // NIEBLA: Añade profundidad y realismo al horizonte
+  scene.fog = new THREE.Fog(0xf8fbf7, 12, 35);
+
   var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 120);
 
-  var hemi = new THREE.HemisphereLight(0xf8fbf7, 0x8a9aa4, 1.05);
-  var dir = new THREE.DirectionalLight(0xffffff, 1.55);
-  dir.position.set(8, 14, 6);
+  // ILUMINACIÓN MEJORADA
+  var hemi = new THREE.HemisphereLight(0xffffff, 0x8a9aa4, 0.6);
+  var dir = new THREE.DirectionalLight(0xffffff, 1.2);
+  dir.position.set(10, 20, 10);
+  dir.castShadow = true;
+  dir.shadow.camera.left = -15;
+  dir.shadow.camera.right = 15;
+  dir.shadow.camera.top = 15;
+  dir.shadow.camera.bottom = -15;
+  dir.shadow.mapSize.width = 1024;
+  dir.shadow.mapSize.height = 1024;
   scene.add(hemi, dir);
 
   /* ---------- Estado de vista (órbita personalizada) ---------- */
@@ -100,8 +99,9 @@
   var selectables = [];
   var contador = { edificios: 0, arboles: 0, parques: 0, pines: 0 };
 
-  var trunkMat = new THREE.MeshLambertMaterial({ color: 0x6b4a2f });
-  var foliageMat = new THREE.MeshLambertMaterial({ color: 0x3f7d58 });
+  // Materiales PBR (Standard) en lugar de Lambert
+  var trunkMat = new THREE.MeshStandardMaterial({ color: 0x6b4a2f, roughness: 0.9 });
+  var foliageMat = new THREE.MeshStandardMaterial({ color: 0x3f7d58, roughness: 0.8 });
 
   function makeTree(x, z, s) {
     var g = new THREE.Group();
@@ -163,10 +163,11 @@
 
   /* Base (siempre visible) */
   groupBase = new THREE.Group();
-  var baseMat = new THREE.MeshLambertMaterial({ color: 0xc9d6c4 });
+  var baseMat = new THREE.MeshStandardMaterial({ color: 0xc9d6c4, roughness: 0.8 });
   var base = new THREE.Mesh(new THREE.PlaneGeometry(CITY * 2 + 2.4, CITY * 2 + 2.4), baseMat);
   base.rotation.x = -Math.PI / 2;
   base.position.y = -0.03;
+  base.receiveShadow = true;
   groupBase.add(base);
 
   /* Relieve */
@@ -195,15 +196,15 @@
     }
     geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
     geo.computeVertexNormals();
-    groupRelief.add(new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true })));
+    groupRelief.add(new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8 })));
   })();
 
   /* Red vial */
   groupRoads = new THREE.Group();
   groupRoads.userData.layer = 'vial';
   (function buildRoads() {
-    var mat = new THREE.MeshLambertMaterial({ color: 0xc9b68f });
-    var matMain = new THREE.MeshLambertMaterial({ color: 0xbfa87e });
+    var mat = new THREE.MeshStandardMaterial({ color: 0xc9b68f, roughness: 0.9 });
+    var matMain = new THREE.MeshStandardMaterial({ color: 0xbfa87e, roughness: 0.9 });
     ROAD_LINES.forEach(function (x) {
       var w = x === 0 ? ROAD_W * 1.5 : ROAD_W;
       var road = new THREE.Mesh(new THREE.PlaneGeometry(w, CITY * 2), x === 0 ? matMain : mat);
@@ -243,7 +244,7 @@
   (function buildGreen() {
     city.parks.forEach(function (p) {
       var w = p.x1 - p.x0, d = p.z1 - p.z0;
-      var mat = new THREE.MeshLambertMaterial({ color: 0x4f8f68 });
+      var mat = new THREE.MeshStandardMaterial({ color: 0x4f8f68, roughness: 0.8 });
       var plane = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat);
       plane.rotation.x = -Math.PI / 2;
       plane.position.set((p.x0 + p.x1) / 2, 0.012, (p.z0 + p.z1) / 2);
@@ -288,9 +289,16 @@
     var cLo = new THREE.Color(0xbcc8cc), cHi = new THREE.Color(0x5f7076);
     city.buildings.forEach(function (b) {
       var hNorm = clamp((b.h - 0.4) / 3.4, 0, 1);
-      var mat = new THREE.MeshLambertMaterial({ color: cLo.clone().lerp(cHi, hNorm) });
+      // MATERIAL PBR para edificios
+      var mat = new THREE.MeshStandardMaterial({
+        color: cLo.clone().lerp(cHi, hNorm),
+        roughness: 0.6,
+        metalness: 0.1
+      });
       var mesh = new THREE.Mesh(new THREE.BoxGeometry(b.w, b.h, b.d), mat);
       mesh.position.set(b.x, b.h / 2, b.z);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
       mesh.userData = {
         kind: 'edificacion', w: b.w, h: b.h, d: b.d, uso: b.uso,
         ficha: {
@@ -314,8 +322,8 @@
   groupInfra.userData.layer = 'infraestructura';
   groupInfra.visible = false;
   (function buildInfra() {
-    var poleMat = new THREE.MeshLambertMaterial({ color: 0x55606a });
-    var lampMat = new THREE.MeshLambertMaterial({ color: 0xf0d98a, emissive: 0x3a2a00, emissiveIntensity: 0.35 });
+    var poleMat = new THREE.MeshStandardMaterial({ color: 0x55606a, roughness: 0.5, metalness: 0.4 });
+    var lampMat = new THREE.MeshStandardMaterial({ color: 0xf0d98a, emissive: 0x3a2a00, emissiveIntensity: 0.35 });
     function light(x, z) {
       var g = new THREE.Group();
       var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.035, 0.55, 6), poleMat);
@@ -330,9 +338,9 @@
       light(k, 0.42); light(k, -0.42); light(0.42, k); light(-0.42, k);
     }
     // Nodos de servicio (equipamiento ilustrativo)
-    var tank = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.5, 10), new THREE.MeshLambertMaterial({ color: 0x8b98a0 }));
+    var tank = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.5, 10), new THREE.MeshStandardMaterial({ color: 0x8b98a0, roughness: 0.7 }));
     tank.position.set(-4.2, 0.25, -4.2); groupInfra.add(tank);
-    var box = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.28, 0.4), new THREE.MeshLambertMaterial({ color: 0x9aa7ad }));
+    var box = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.28, 0.4), new THREE.MeshStandardMaterial({ color: 0x9aa7ad, roughness: 0.7 }));
     box.position.set(4.3, 0.14, 4.3); groupInfra.add(box);
   })();
 
@@ -353,10 +361,10 @@
     pins.forEach(function (p) {
       var g = new THREE.Group();
       var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.03, 0.42, 6),
-        new THREE.MeshLambertMaterial({ color: pinBase }));
+        new THREE.MeshStandardMaterial({ color: pinBase, roughness: 0.5 }));
       pole.position.y = 0.21;
       var ball = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 10),
-        new THREE.MeshLambertMaterial({ color: pinBase }));
+        new THREE.MeshStandardMaterial({ color: pinBase, roughness: 0.5 }));
       ball.position.y = 0.5;
       g.add(pole, ball);
       g.position.set(p.x, 0, p.z);
@@ -433,8 +441,10 @@
   }
   function setEmissive(obj, on) {
     if (obj.isMesh) {
-      obj.material.emissive.setHex(on ? 0x8a6a1a : 0x000000);
-      obj.material.emissiveIntensity = on ? 0.55 : 0;
+      if (obj.material.emissive) {
+        obj.material.emissive.setHex(on ? 0x8a6a1a : 0x000000);
+        obj.material.emissiveIntensity = on ? 0.55 : 0;
+      }
     } else if (obj.isGroup) {
       obj.children.forEach(function (c) { setEmissive(c, on); });
     }
@@ -651,7 +661,7 @@
   });
   document.getElementById('infoClose').addEventListener('click', deselect);
 
-  /* ---------- Renderizado (bajo demanda + intro animada) ---------- */
+  /* ---------- Renderizado ---------- */
   var needsRender = true;
   function requestRender() { needsRender = true; }
 
@@ -701,7 +711,7 @@
     window.__modelo3D = { estado: 'error', motivo: msg };
   }
 
-  /* ---------- Integración SIG (GeoJSON / export de QGIS) ---------- */
+  /* ---------- Integración SIG ---------- */
   function cargarGeoJSON(geojson, opciones) {
     opciones = opciones || {};
     if (!geojson || geojson.type !== 'FeatureCollection') {
@@ -709,8 +719,8 @@
     }
     var grupo = new THREE.Group();
     grupo.userData.layer = 'gis';
-    var mat = new THREE.MeshLambertMaterial({ color: (opciones.color || 0x9bafb9) });
-    var origen = opciones.origen || null; // [lon, lat] para restar y centrar localmente
+    var mat = new THREE.MeshStandardMaterial({ color: (opciones.color || 0x9bafb9), roughness: 0.7 });
+    var origen = opciones.origen || null;
 
     geojson.features.forEach(function (ft) {
       var g = ft.geometry;
@@ -741,7 +751,6 @@
     return grupo;
   }
 
-  /* ---------- Inicialización ---------- */
   updateCamera();
   resize();
   requestAnimationFrame(loop);
