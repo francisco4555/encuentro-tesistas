@@ -1,380 +1,804 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Encuentro de Tesistas | UNRC · LCAZU + LUDM</title>
-<meta name="description" content="Encuentro de Tesistas de la Licenciatura en Ciencias Ambientales para Zonas Urbanas (LCAZU) y la Licenciatura en Urbanismo y Desarrollo Metropolitano (LUDM) de la Universidad Nacional Rosario Castellanos.">
-<meta name="author" content="Comité organizador · Encuentro de Tesistas UNRC">
-<meta name="robots" content="index, follow">
-<meta name="theme-color" content="#690E31">
-
-<!-- Open Graph -->
-<meta property="og:site_name" content="Encuentro de Tesistas · UNRC">
-<meta property="og:title" content="Encuentro de Tesistas | UNRC · LCAZU + LUDM">
-<meta property="og:description" content="Investigación, ambiente y territorio para ciudades más justas y sostenibles.">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="es_MX">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Encuentro de Tesistas | UNRC">
-<meta name="twitter:description" content="Investigación, ambiente y territorio para ciudades más justas y sostenibles.">
-
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23690E31'/%3E%3Cpath d='M15 44V27h8v17Zm13 0V17h8v27Zm13 0V31h8v13Z' fill='%23F8F7F3'/%3E%3Cpath d='M15 20h42' stroke='%23B58A32' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='38' r='2' fill='%23B58A32'/%3E%3C/svg%3E">
-<link rel="preload" href="assets/logo-unrc.jpg" as="image">
-<link rel="stylesheet" href="css/styles.css">
-
-<script type="application/ld+json">
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
 {
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  "name": "Universidad Nacional Rosario Castellanos",
-  "alternateName": "UNRC",
-  "department": [
-    { "@type": "EducationalOrganization", "name": "Licenciatura en Ciencias Ambientales para Zonas Urbanas", "alternateName": "LCAZU" },
-    { "@type": "EducationalOrganization", "name": "Licenciatura en Urbanismo y Desarrollo Metropolitano", "alternateName": "LUDM" }
-  ]
+  "name": "Encuentro Tesistas V4",
+  "schemaVersion": 1,
+  "mcpTools": [],
+  "mcpServerNames": []
 }
 </script>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuentro de Tesistas | UNRC · LCAZU + LUDM</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #690E31;
+            --primary-light: #8a1a4a;
+            --secondary: #B58A32;
+            --accent-green: #4F8F68;
+            --bg-dark: #0a0a0a; /* Cambiamos a fondo oscuro para que el 3D resalte */
+            --text-light: #fdfbf7;
+            --text-muted: #aaa;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.1;
+        }
+
+        /* --- Three.js Canvas --- */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none; /* Deja que los clicks pasen al contenido */
+        }
+
+        /* --- Navigation --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.5rem 0;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--white);
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+            filter: brightness(0) invert(1); /* Logo blanco para fondo oscuro */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.2rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 2rem;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .hero h1 span {
+            color: var(--secondary);
+            font-style: italic;
+        }
+
+        .lead {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 10px 30px rgba(105, 14, 49, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(105, 14, 49, 0.6);
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(255,255,255,0.3);
+            color: var(--white);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--white);
+        }
+
+        /* --- Common Section --- */
+        .section {
+            padding: 150px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-center {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 5rem;
+        }
+
+        .section-center h2 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Sobre Section --- */
+        .sobre-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .sobre-text p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text-muted);
+        }
+
+        .highlight-box {
+            background: var(--glass);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border-left: 6px solid var(--secondary);
+            font-style: italic;
+            font-size: 1.3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- Ejes Grid --- */
+        .ejes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .eje-card {
+            background: var(--glass);
+            padding: 3rem 2rem;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .eje-card:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--secondary);
+            transform: translateY(-10px);
+        }
+
+        .eje-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .eje-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .eje-card p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- Programa --- */
+        .programa-wrap {
+            background: var(--glass);
+            border-radius: 40px;
+            padding: 4rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .program-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 4rem;
+        }
+
+        .tab {
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: transparent;
+            color: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(105, 14, 49, 0.4);
+        }
+
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            transition: var(--transition);
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+        }
+
+        .timeline-time {
+            text-align: right;
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+
+        .timeline-content {
+            padding: 1.5rem 2rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 0 20px 20px 0;
+            border-left: 3px solid var(--primary);
+        }
+
+        .timeline-content h4 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            color: var(--text-muted);
+        }
+
+        /* --- FAQ --- */
+        .faq-grid {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        details {
+            background: var(--glass);
+            margin-bottom: 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: var(--transition);
+        }
+
+        summary {
+            padding: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        details p {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #000;
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-col h4 {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.5;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 992px) {
+            .sobre-grid { grid-template-columns: 1fr; text-align: center; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: 3.5rem; }
+        }
+    </style>
 </head>
 <body>
-<a class="skip-link" href="#contenido">Saltar al contenido principal</a>
 
-<header class="top" id="top">
-  <div class="wrap nav">
-    <a class="brand" href="#inicio" aria-label="Encuentro de Tesistas — Universidad Nacional Rosario Castellanos, ir al inicio">
-      <img src="assets/logo-unrc.jpg" alt="Logotipo de la Universidad Nacional Rosario Castellanos" width="190" height="51">
-      <span class="brand-wordmark">Encuentro de Tesistas</span>
-    </a>
+    <div id="canvas-container"></div>
 
-    <nav class="navlinks" id="navlinks" aria-label="Navegación principal">
-      <a href="#inicio" class="active">Inicio</a>
-      <a href="#sobre">Sobre</a>
-      <a href="#ejes">Ejes</a>
-      <a href="#programa">Programa</a>
-      <a href="#participa">Participa</a>
-      <a href="#comite">Comité</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
-
-    <button class="menu" id="menu" aria-expanded="false" aria-controls="navlinks" aria-label="Abrir menú de navegación">☰</button>
-  </div>
-</header>
-
-<main id="contenido">
-
-  <!-- ============ 1. PORTADA + MODELO 3D ============ -->
-  <section class="hero" id="inicio" aria-labelledby="hero-title">
-    <div class="wrap hero-inner">
-      <div class="hero-copy">
-        <p class="eyebrow">Encuentro académico · UNRC</p>
-        <h1 id="hero-title">Encuentro<br>de <span>Tesistas</span></h1>
-        <p class="lead">Diálogo, conocimiento y territorio para ciudades más justas y sostenibles.</p>
-
-        <div class="lic">
-          <div><span>LCAZU</span>Licenciatura en Ciencias Ambientales para Zonas Urbanas</div>
-          <div><span>LUDM</span>Licenciatura en Urbanismo y Desarrollo Metropolitano</div>
+    <header id="main-header">
+        <div class="nav-wrap">
+            <a href="#" class="logo">
+                <img src="https://francisco4555.github.io/encuentro-tesistas/assets/logo-unrc.jpg" alt="UNRC">
+                <span>Encuentro de Tesistas</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#sobre">Sobre</a>
+                <a href="#ejes">Ejes</a>
+                <a href="#programa">Programa</a>
+                <a href="#faq">FAQ</a>
+            </nav>
         </div>
+    </header>
 
-        <ul class="meta" aria-label="Datos del evento">
-          <li>◷ <b>Fecha por confirmar</b><span>Horario por confirmar</span></li>
-          <li>⌖ <b>Sede por confirmar</b><span>Modalidad por confirmar</span></li>
-        </ul>
-
-        <div class="actions">
-          <a class="btn" href="#participa">Conoce cómo participar <span aria-hidden="true">→</span></a>
-          <a class="btn ghost" href="#programa">Explorar programa <span aria-hidden="true">↓</span></a>
+    <section class="hero">
+        <div class="hero-content">
+            <span class="eyebrow">Universidad Nacional Rosario Castellanos</span>
+            <h1>Encuentro de <span>Tesistas</span></h1>
+            <p class="lead">Un ecosistema digital de diálogo, conocimiento y territorio para construir ciudades más justas y sostenibles.</p>
+            <div class="btn-group">
+                <a href="#programa" class="btn btn-primary">Explorar Agenda</a>
+                <a href="#sobre" class="btn btn-outline">Conocer más</a>
+            </div>
         </div>
+    </section>
 
-        <p class="notice">La información pendiente se actualizará cuando exista confirmación oficial del comité organizador.</p>
-      </div>
-
-      <div class="viewer" id="viewer">
-        <div class="viewer-top">
-          <span class="chip">◈ Laboratorio territorial · modelo 3D interactivo</span>
+    <section class="section" id="sobre">
+        <div class="container sobre-grid">
+            <div class="sobre-text reveal">
+                <span class="eyebrow">Interdisciplina</span>
+                <h2>Donde el ambiente se encuentra con la ciudad</h2>
+                <p>El Encuentro de Tesistas es un puente académico diseñado para la vinculación entre la Licenciatura en Ciencias Ambientales para Zonas Urbanas (LCAZU) y la Licenciatura en Urbanismo y Desarrollo Metropolitano (LUDM).</p>
+                <div class="highlight-box">
+                    "Buscamos transformar la investigación académica en herramientas reales de regeneración territorial."
+                </div>
+            </div>
+            <div class="reveal" style="text-align:center">
+                <!-- Espacio para interactuar con el fondo 3D -->
+                <div style="font-size: 0.9rem; color: var(--text-muted); border: 1px dashed var(--secondary); padding: 2rem; border-radius: 20px;">
+                    Mueve el mouse para navegar el territorio digital 3D en el fondo.
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="viewer-canvas" id="viewer-canvas">
-          <canvas id="city" role="img" tabindex="0"
-            aria-label="Maqueta urbana tridimensional interactiva. Contiene edificaciones, calles, áreas verdes, usos de suelo, relieve, infraestructura y puntos de investigación. Puede rotarse, acercarse y desplazarse. Modelo demostrativo, no representa cartografía oficial."></canvas>
-
-          <div class="viewer-hint" aria-hidden="true">Arrastra para rotar · Rueda para acercar · Clic derecho para desplazar</div>
-
-          <div class="viewer-controls" role="group" aria-label="Controles de vista del modelo">
-            <button id="zoomIn" aria-label="Acercar">＋</button>
-            <button id="zoomOut" aria-label="Alejar">－</button>
-            <button id="resetView" aria-label="Restablecer vista inicial">↺</button>
-          </div>
-
-          <!-- Ficha informativa -->
-          <aside class="info-card" id="infoCard" hidden aria-live="polite" aria-label="Ficha informativa del elemento seleccionado">
-            <button class="info-close" id="infoClose" aria-label="Cerrar ficha informativa">×</button>
-            <p class="info-kicker" id="infoKicker">Elemento</p>
-            <h3 id="infoTitle">—</h3>
-            <dl id="infoBody"></dl>
-            <p class="info-note">Contenido ilustrativo. Los datos reales de investigación se incorporarán al confirmarse.</p>
-          </aside>
+    <section class="section" id="ejes" style="background: rgba(255,255,255,0.02)">
+        <div class="container">
+            <div class="section-center reveal">
+                <span class="eyebrow">Líneas de investigación</span>
+                <h2>Ejes Temáticos</h2>
+            </div>
+            <div class="ejes-grid">
+                <div class="eje-card reveal">
+                    <span class="eje-icon">🌿</span>
+                    <h3>Ambiente y Territorio</h3>
+                    <p>Ecosistemas urbanos, resiliencia y servicios ambientales.</p>
+                </div>
+                <div class="eje-card reveal">
+                    <span class="eje-icon">🗺️</span>
+                    <h3>Cartografía y SIG</h3>
+                    <p>Análisis geoespacial y representación de datos territoriales.</p>
+                </div>
+                <div class="eje-card reveal">
+                    <span class="eje-icon">🏗️</span>
+                    <h3>Ordenamiento Urbano</h3>
+                    <p>Planeación estratégica y diseño de ciudades sostenibles.</p>
+                </div>
+                <div class="eje-card reveal">
+                    <span class="eje-icon">🤝</span>
+                    <h3>Gestión Socioambiental</h3>
+                    <p>Gobernanza, políticas públicas y participación ciudadana.</p>
+                </div>
+                <div class="eje-card reveal">
+                    <span class="eje-icon">☀️</span>
+                    <h3>Cambio Climático</h3>
+                    <p>Mitigación, adaptación y gestión de riesgos urbanos.</p>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="viewer-bottom">
-          <fieldset class="layers" id="layers">
-            <legend class="sr-only">Activar y desactivar capas del modelo</legend>
-            <button type="button" data-layer="edificaciones" aria-pressed="true"><i style="--c:#9bafb9"></i>Edificaciones</button>
-            <button type="button" data-layer="vial" aria-pressed="true"><i style="--c:#c9b68f"></i>Vialidades</button>
-            <button type="button" data-layer="verdes" aria-pressed="true"><i style="--c:#4f8f68"></i>Áreas verdes</button>
-            <button type="button" data-layer="usos" aria-pressed="false"><i style="--c:#e3c98f"></i>Usos de suelo</button>
-            <button type="button" data-layer="relieve" aria-pressed="false"><i style="--c:#b8a98a"></i>Relieve</button>
-            <button type="button" data-layer="infraestructura" aria-pressed="false"><i style="--c:#667780"></i>Infraestructura</button>
-            <button type="button" data-layer="investigacion" aria-pressed="false"><i style="--c:#690E31"></i>Investigación</button>
-            <button type="button" class="layers-all" id="layersAll">Mostrar todo</button>
-          </fieldset>
-          <p class="model-note">Modelo demostrativo esquemático — <strong>no</strong> representa cartografía ni datos georreferenciados oficiales.</p>
+    <section class="section" id="programa">
+        <div class="container">
+            <div class="section-center reveal">
+                <span class="eyebrow">Agenda Preliminar</span>
+                <h2>Programa del Encuentro</h2>
+            </div>
+            <div class="programa-wrap reveal">
+                <div class="program-tabs">
+                    <button class="tab active" onclick="switchDay(1)">Día 1</button>
+                    <button class="tab" onclick="switchDay(2)">Día 2</button>
+                </div>
+                <div id="day1" class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-time">09:00 AM</div>
+                        <div class="timeline-content">
+                            <h4>Inauguración Académica</h4>
+                            <p>Apertura oficial y presentación de objetivos.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">11:00 AM</div>
+                        <div class="timeline-content">
+                            <h4>Mesas de Diálogo Territorial</h4>
+                            <p>Intercambio de avances entre LCAZU y LUDM.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="day2" class="timeline" style="display: none;">
+                    <div class="timeline-item">
+                        <div class="timeline-time">09:00 AM</div>
+                        <div class="timeline-content">
+                            <h4>Talleres de Co-creación SIG</h4>
+                            <p>Mapeo colaborativo y análisis espacial.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">01:00 PM</div>
+                        <div class="timeline-content">
+                            <h4>Clausura y Síntesis</h4>
+                            <p>Presentación de conclusiones y próximos pasos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============ 2. SOBRE EL ENCUENTRO ============ -->
-  <section class="section" id="sobre" aria-labelledby="sobre-title">
-    <div class="wrap two">
-      <div class="reveal">
-        <p class="eyebrow">Dos disciplinas, una visión compartida</p>
-        <h2 id="sobre-title">Investigación que conecta ambiente y ciudad</h2>
-        <p>El Encuentro de Tesistas es un espacio académico de intercambio de avances de investigación, vinculación entre tesistas y retroalimentación entre pares y docentes, impulsado por la Licenciatura en Ciencias Ambientales para Zonas Urbanas (LCAZU) y la Licenciatura en Urbanismo y Desarrollo Metropolitano (LUDM) de la Universidad Nacional Rosario Castellanos.</p>
-        <div class="note">Nuestro propósito es fortalecer el diálogo interdisciplinario y la investigación aplicada a los desafíos socioambientales y urbanos.</div>
-      </div>
-      <div class="layers-illustration reveal" role="img" aria-label="Ilustración esquemática de capas de información territorial: vegetación y ambiente, ciudad e infraestructura, y relieve y territorio">
-        <div class="layer"></div>
-        <div class="layer"></div>
-        <div class="layer"></div>
-        <span class="layer-tag">Vegetación y ambiente</span>
-        <span class="layer-tag">Ciudad e infraestructura</span>
-        <span class="layer-tag">Relieve y territorio</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 3. OBJETIVOS ACADÉMICOS ============ -->
-  <section class="section soft" id="objetivos" aria-labelledby="objetivos-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow">Propósitos del encuentro</p>
-        <h2 id="objetivos-title">Objetivos académicos</h2>
-        <p class="sub">Propuesta orientativa, sujeta a validación del comité organizador.</p>
-      </div>
-      <ul class="objectives">
-        <li class="reveal"><span class="num">01</span><div><h3>Intercambiar avances</h3><p>Compartir los avances de investigación de las y los tesistas de ambas licenciaturas.</p></div></li>
-        <li class="reveal"><span class="num">02</span><div><h3>Fomentar la retroalimentación</h3><p>Propiciar el diálogo constructivo entre pares y docentes sobre las tesis en curso.</p></div></li>
-        <li class="reveal"><span class="num">03</span><div><h3>Articular disciplinas</h3><p>Fortalecer la interdisciplina entre las ciencias ambientales y el urbanismo.</p></div></li>
-        <li class="reveal"><span class="num">04</span><div><h3>Vincular con el territorio</h3><p>Conectar la investigación con los retos socioambientales y urbanos de las ciudades.</p></div></li>
-        <li class="reveal"><span class="num">05</span><div><h3>Difundir conocimiento</h3><p>Visibilizar metodologías y resultados de investigación aplicada a la comunidad universitaria.</p></div></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ============ 4. EJES TEMÁTICOS ============ -->
-  <section class="section" id="ejes" aria-labelledby="ejes-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow">Líneas de investigación · propuesta temática</p>
-        <h2 id="ejes-title">Ejes temáticos</h2>
-      </div>
-      <div class="cards">
-        <article class="card reveal" tabindex="0">
-          <div class="symbol" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-8 6-14 16-16-1 10-7 16-16 16Z"/><path d="M4 20c3-4 6-7 10-9"/></svg>
-          </div>
-          <h3>Ambiente y territorio</h3>
-          <p>Servicios ambientales, ecosistemas urbanos y resiliencia territorial.</p>
-        </article>
-        <article class="card reveal" tabindex="0">
-          <div class="symbol" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l9-3 9 3-9 3-9-3Z"/><path d="M3 6v6l9 3 9-3V6"/><path d="M3 12v6l9 3 9-3v-6"/></svg>
-          </div>
-          <h3>Cartografía y SIG</h3>
-          <p>Análisis espacial, geotecnologías y representación territorial.</p>
-        </article>
-        <article class="card reveal" tabindex="0">
-          <div class="symbol" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M4 10h16M10 4v16"/></svg>
-          </div>
-          <h3>Ordenamiento urbano</h3>
-          <p>Planeación, diseño urbano y usos del suelo.</p>
-        </article>
-        <article class="card reveal" tabindex="0">
-          <div class="symbol" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 2.7-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2"/><path d="M15.5 14c2.5 0 4 1.6 4 4"/></svg>
-          </div>
-          <h3>Gestión socioambiental</h3>
-          <p>Gobernanza, participación social y políticas públicas.</p>
-        </article>
-        <article class="card reveal" tabindex="0">
-          <div class="symbol" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
-          </div>
-          <h3>Cambio climático</h3>
-          <p>Adaptación, mitigación y riesgos en las ciudades.</p>
-        </article>
-      </div>
-      <p class="notice">Ejes ilustrativos, sujetos a validación del comité organizador.</p>
-    </div>
-  </section>
-
-  <!-- ============ 5. PROGRAMA INTERACTIVO ============ -->
-  <section class="section soft" id="programa" aria-labelledby="programa-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow">Agenda preliminar</p>
-        <h2 id="programa-title">Programa del encuentro</h2>
-        <p class="sub">Secuencia ilustrativa de actividades. Los días, horarios y participantes oficiales están <strong>por confirmar</strong>.</p>
-      </div>
-
-      <div class="program" id="programaWidget">
-        <div class="tabs" role="tablist" aria-label="Selección de día del programa">
-          <button class="tab active" role="tab" id="tab-dia1" aria-controls="panel-dia1" aria-selected="true">Día 1</button>
-          <button class="tab" role="tab" id="tab-dia2" aria-controls="panel-dia2" aria-selected="false" tabindex="-1">Día 2</button>
+    <section class="section" id="faq">
+        <div class="container">
+            <div class="section-center reveal">
+                <span class="eyebrow">Información</span>
+                <h2>Preguntas Frecuentes</h2>
+            </div>
+            <div class="faq-grid reveal">
+                <details>
+                    <summary>¿Quiénes pueden participar?</summary>
+                    <p>Tesistas y estudiantes avanzados de ambas licenciaturas.</p>
+                </details>
+                <details>
+                    <summary>¿Dónde se realizará?</summary>
+                    <p>Sede y modalidad por confirmar según convocatoria oficial.</p>
+                </details>
+            </div>
         </div>
+    </section>
 
-        <div class="filters" role="group" aria-label="Filtrar por eje temático">
-          <button type="button" class="filter active" data-filter="*" aria-pressed="true">Todas</button>
-          <button type="button" class="filter" data-filter="Ambiente y territorio" aria-pressed="false">Ambiente</button>
-          <button type="button" class="filter" data-filter="Cartografía y SIG" aria-pressed="false">Cartografía y SIG</button>
-          <button type="button" class="filter" data-filter="Ordenamiento urbano" aria-pressed="false">Ordenamiento</button>
-          <button type="button" class="filter" data-filter="Gestión socioambiental" aria-pressed="false">Gestión</button>
-          <button type="button" class="filter" data-filter="Cambio climático" aria-pressed="false">Clima</button>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>UNRC</h4>
+                    <p>Universidad Nacional Rosario Castellanos</p>
+                    <p>Ciudad de México</p>
+                </div>
+                <div class="footer-col">
+                    <h4>LCAZU + LUDM</h4>
+                    <p>Ciencias Ambientales para Zonas Urbanas</p>
+                    <p>Urbanismo y Desarrollo Metropolitano</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© <span id="year"></span> · Boceto académico no oficial. Información sujeta a validación.</p>
+            </div>
         </div>
+    </footer>
 
-        <div class="timeline" id="panel-dia1" role="tabpanel" aria-labelledby="tab-dia1">
-          <ol class="timeline-list"></ol>
-        </div>
-        <div class="timeline" id="panel-dia2" role="tabpanel" aria-labelledby="tab-dia2" hidden></div>
-        <p class="empty" id="programaEmpty" hidden>No hay actividades para este filtro en el día seleccionado.</p>
-      </div>
-    </div>
-  </section>
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 
-  <!-- ============ 6. PARTICIPACIÓN Y CONVOCATORIA ============ -->
-  <section class="section" id="participa" aria-labelledby="participa-title">
-    <div class="wrap two">
-      <div class="reveal">
-        <p class="eyebrow">Convocatoria</p>
-        <h2 id="participa-title">Participa en el encuentro</h2>
-        <p>El encuentro está dirigido a la comunidad académica de ambas licenciaturas. La convocatoria definitiva precisará los requisitos, formatos y plazos de participación.</p>
-        <ul class="audience">
-          <li><strong>Tesistas</strong> de LCAZU y LUDM, en cualquier etapa de su investigación.</li>
-          <li><strong>Estudiantes avanzados</strong> interesados en el intercambio académico.</li>
-          <li><strong>Docentes e investigadores</strong> que acompañan los procesos de tesis.</li>
-          <li><strong>Público interesado</strong> en temas ambientales y urbanos, según la convocatoria.</li>
-        </ul>
-      </div>
-      <div class="panel reveal">
-        <h3>Proceso de participación</h3>
-        <ol class="steps">
-          <li><span class="step"><b>1</b></span><div><strong>Consulta la convocatoria</strong><p>Revisa los requisitos y plazos en la convocatoria oficial.</p></div></li>
-          <li><span class="step"><b>2</b></span><div><strong>Presenta tu propuesta</strong><p>Comparte tu avance o tema según el formato indicado en la convocatoria.</p></div></li>
-          <li><span class="step"><b>3</b></span><div><strong>Recibe la confirmación</strong><p>El comité confirmará tu participación por los canales institucionales.</p></div></li>
-        </ol>
-        <p class="notice"><strong>Registro:</strong> la asignación la coordinan las y los docentes de cada licenciatura.</p>
-      </div>
-    </div>
-  </section>
+    <script>
+        // --- 3D BACKGROUND ENGINE ---
+        let scene, camera, renderer, cityGroup, particles;
+        let mouseX = 0, mouseY = 0;
 
-  <!-- ============ 7. COMITÉ ORGANIZADOR ============ -->
-  <section class="section" id="comite" aria-labelledby="comite-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow">Coordinación académica</p>
-        <h2 id="comite-title">Comité organizador</h2>
-      </div>
-      <div class="committee">
-        <div class="reveal"><h3>LCAZU</h3><p>Licenciatura en Ciencias Ambientales para Zonas Urbanas.</p><p class="placeholder">Integrantes y correo por confirmar</p></div>
-        <div class="reveal"><h3>LUDM</h3><p>Licenciatura en Urbanismo y Desarrollo Metropolitano.</p><p class="placeholder">Integrantes y correo por confirmar</p></div>
-        <div class="reveal"><h3>UNRC</h3><p>Universidad Nacional Rosario Castellanos · Ciudad de México.</p><p class="placeholder">Contacto institucional por confirmar</p></div>
-      </div>
-    </div>
-  </section>
+        function init3D() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x0a0a0a, 0.02);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-  <!-- ============ 8. PREGUNTAS FRECUENTES ============ -->
-  <section class="section soft" id="faq" aria-labelledby="faq-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow">Información útil</p>
-        <h2 id="faq-title">Preguntas frecuentes</h2>
-      </div>
-      <div class="faq">
-        <details class="reveal">
-          <summary>¿Quiénes pueden participar?</summary>
-          <p>La propuesta contempla tesistas, estudiantes avanzados y docentes; el alcance final dependerá de la convocatoria oficial.</p>
-        </details>
-        <details class="reveal">
-          <summary>¿Cómo me registro?</summary>
-          <p>La asignación del registro la coordinan las y los docentes de cada licenciatura; la convocatoria precisará el procedimiento.</p>
-        </details>
-        <details class="reveal">
-          <summary>¿Puedo presentar avances de tesis?</summary>
-          <p>El encuentro está pensado para compartir avances de investigación; los requisitos específicos se publicarán en la convocatoria.</p>
-        </details>
-        <details class="reveal">
-          <summary>¿Dónde se realizará?</summary>
-          <p>La sede y modalidad todavía están por confirmar.</p>
-        </details>
-        <details class="reveal">
-          <summary>¿Habrá constancia de participación?</summary>
-          <p>La emisión de constancias está pendiente de confirmación oficial.</p>
-        </details>
-        <details class="reveal">
-          <summary>¿Cuál será el horario?</summary>
-          <p>El programa y los horarios definitivos se comunicarán oportunamente.</p>
-        </details>
-      </div>
-    </div>
-  </section>
+            renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.toneMapping = THREE.ReinhardToneMapping;
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-  <!-- ============ 9. CONTACTO INSTITUCIONAL ============ -->
-  <section class="section" id="contacto" aria-labelledby="contacto-title">
-    <div class="wrap contact">
-      <div class="reveal">
-        <p class="eyebrow">Contacto institucional</p>
-        <h2 id="contacto-title">Comunícate con el comité</h2>
-        <p>Las vías oficiales de contacto se publicarán junto con la convocatoria.</p>
-        <ul class="contact-list">
-          <li>🏛 <div><strong>Universidad Nacional Rosario Castellanos</strong><span>Ciudad de México</span></div></li>
-          <li>✉ <div><strong>Correo institucional</strong><span>Por confirmar</span></div></li>
-          <li>◷ <div><strong>Horario de atención</strong><span>Por confirmar</span></div></li>
-        </ul>
-      </div>
-      <div class="panel reveal">
-        <h3>Mantente informado</h3>
-        <p>La información oficial del encuentro (convocatoria y programa) se difundirá a través de los canales institucionales de la UNRC, LCAZU y LUDM.</p>
-        <p class="notice">Este sitio es un boceto académico no oficial. La información y la agenda están sujetas a validación institucional.</p>
-      </div>
-    </div>
-  </section>
-</main>
+            // Lighting
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+            scene.add(hemiLight);
 
-<footer>
-  <div class="wrap">
-    <div class="foot">
-      <div class="foot-brand">
-        <strong>UNRC</strong>
-        <p>Universidad Nacional Rosario Castellanos</p>
-      </div>
-      <div class="foot-lic">
-        <span>Licenciatura en Ciencias Ambientales para Zonas Urbanas (LCAZU)</span>
-        <span>Licenciatura en Urbanismo y Desarrollo Metropolitano (LUDM)</span>
-      </div>
-      <div class="foot-event">
-        <span>Encuentro de Tesistas</span>
-        <small>Ciudad de México · Datos por confirmar</small>
-      </div>
-    </div>
-    <hr>
-    <small>© <span id="year"></span> · Boceto académico no oficial. Información y agenda sujetas a validación institucional.</small>
-  </div>
-</footer>
+            const pointLight = new THREE.PointLight(0xB58A32, 20, 100);
+            pointLight.position.set(10, 10, 10);
+            scene.add(pointLight);
 
-<script src="vendor/three.min.js" defer></script>
-<script src="js/app.js" defer></script>
-<script src="js/urban-model.js" defer></script>
+            const pointLight2 = new THREE.PointLight(0x4F8F68, 20, 100);
+            pointLight2.position.set(-10, 10, 10);
+            scene.add(pointLight2);
+
+            // Create Procedural City
+            cityGroup = new THREE.Group();
+            const gridCount = 25;
+
+            for (let x = 0; x < gridCount; x++) {
+                for (let z = 0; z < gridCount; z++) {
+                    const h = Math.random() * 6 + 1;
+                    const w = Math.random() * 0.5 + 0.5;
+                    const geometry = new THREE.BoxGeometry(w, h, w);
+
+                    const color = Math.random() > 0.6 ? 0xB58A32 : (Math.random() > 0.5 ? 0x4F8F68 : 0x690E31);
+                    const material = new THREE.MeshStandardMaterial({
+                        color: color,
+                        transparent: true,
+                        opacity: 0.8,
+                        roughness: 0.2,
+                        metalness: 0.8
+                    });
+
+                    const cube = new THREE.Mesh(geometry, material);
+                    cube.position.set(
+                        x * 2 - (gridCount * 2 / 2),
+                        h / 2,
+                        z * 2 - (gridCount * 2 / 2)
+                    );
+                    cityGroup.add(cube);
+                }
+            }
+            scene.add(cityGroup);
+
+            // Ground Plane
+            const groundGeo = new THREE.PlaneGeometry(100, 100);
+            const groundMat = new THREE.MeshStandardMaterial({
+                color: 0x050505,
+                roughness: 0.8,
+                metalness: 0.2
+            });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            scene.add(ground);
+
+            // Grid Helper for tech look
+            const gridHelper = new THREE.GridHelper(100, 50, 0x333333, 0x222222);
+            scene.add(gridHelper);
+
+            // Floating Particles
+            const partGeo = new THREE.BufferGeometry();
+            const partCount = 1500;
+            const posArray = new Float32Array(partCount * 3);
+            for(let i = 0; i < partCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 100;
+            }
+            partGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const partMat = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0xaaaaaa,
+                transparent: true,
+                opacity: 0.5
+            });
+            particles = new THREE.Points(partGeo, partMat);
+            scene.add(particles);
+
+            camera.position.set(20, 20, 20);
+            camera.lookAt(0, 0, 0);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Smooth rotation based on mouse
+            const targetRotX = mouseY * 0.0005;
+            const targetRotY = mouseX * 0.0005;
+
+            cityGroup.rotation.x += (targetRotX - cityGroup.rotation.x) * 0.05;
+            cityGroup.rotation.y += (targetRotY - cityGroup.rotation.y) * 0.05;
+
+            // Building Reactivity
+            const time = Date.now() * 0.001;
+            cityGroup.children.forEach((cube, i) => {
+                const dist = Math.sqrt(
+                    Math.pow(cube.position.x - (mouseX * 0.02), 2) +
+                    Math.pow(cube.position.z - (mouseY * 0.02), 2)
+                );
+                const scale = Math.max(1, 1.5 - dist * 0.1);
+                cube.scale.set(1, scale, 1);
+                // Subtle breathing effect
+                cube.position.y = (cube.geometry.parameters.height / 2) + Math.sin(time + i) * 0.1;
+            });
+
+            // Particle animation
+            particles.rotation.y += 0.001;
+            particles.rotation.x += 0.0005;
+
+            // Gentle float animation
+            cityGroup.position.y = Math.sin(time) * 0.5;
+
+            renderer.render(scene, camera);
+        }
+
+        // --- UI INTERACTIONS ---
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX - window.innerWidth / 2;
+            mouseY = e.clientY - window.innerHeight / 2;
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            header.classList.toggle('scrolled', window.scrollY > 50);
+
+            // Cinematic Zoom & Tilt
+            const scrollPerc = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            camera.position.z = 20 - (scrollPerc * 15);
+            camera.position.y = 20 - (scrollPerc * 10);
+            camera.rotation.x = -0.5 + (scrollPerc * 0.2);
+            camera.lookAt(0, 0, 0);
+        });
+
+        function switchDay(day) {
+            const tabs = document.querySelectorAll('.tab');
+            const d1 = document.getElementById('day1');
+            const d2 = document.getElementById('day2');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            d1.style.display = day === 1 ? 'block' : 'none';
+            d2.style.display = day === 2 ? 'block' : 'none';
+        }
+
+        // Reveal animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Init everything
+        init3D();
+        animate();
+    </script>
 </body>
 </html>
