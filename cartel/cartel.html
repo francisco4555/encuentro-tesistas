@@ -7,56 +7,74 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    /* Cartel A3 vertical (297 × 420 mm) — se diseña a 1123 × 1587 px */
+    /* Cartel A3 vertical (297 × 420 mm) — diseñado a 1123 × 1587 px */
     @page { size: 297mm 420mm; margin: 0; }
-    :root { --guinda: #690E31; --guinda-claro: #a52360; --oro: #B58A32; --verde: #4F8F68; --bg: #0a0a0a; --txt: #fdfbf7; --mut: #b9b4ac; }
+    :root { --guinda: #690E31; --guinda-claro: #a52360; --oro: #B58A32; --verde: #4F8F68; --verde-claro: #6bc47f; --bg: #0a0a0a; --txt: #fdfbf7; --mut: #b9b4ac; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { background: #000; }
     body { font-family: 'Inter', sans-serif; color: var(--txt); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .poster { position: relative; width: 1123px; height: 1587px; overflow: hidden; margin: 0 auto; background:
-        radial-gradient(1200px 700px at 85% -5%, rgba(105,14,49,0.55), transparent 60%),
-        radial-gradient(900px 600px at 0% 45%, rgba(79,143,104,0.18), transparent 60%),
+        radial-gradient(1100px 650px at 92% -6%, rgba(105,14,49,0.6), transparent 60%),
+        radial-gradient(900px 700px at -5% 60%, rgba(79,143,104,0.28), transparent 62%),
+        radial-gradient(800px 500px at 100% 75%, rgba(79,143,104,0.2), transparent 62%),
         var(--bg); }
-    .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(#000 0%, transparent 70%); -webkit-mask-image: linear-gradient(#000 0%, transparent 70%); }
-    .city { position: absolute; left: 0; right: 0; bottom: 0; height: 640px; }
+    .deco { position: absolute; inset: 0; }
+    .city { position: absolute; left: 0; right: 0; bottom: 0; height: 540px; }
     .city img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: bottom; }
-    .city::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, var(--bg) 0%, rgba(10,10,10,0) 55%); }
-    .content { position: absolute; inset: 0; padding: 64px 76px 56px; display: flex; flex-direction: column; }
+    .city::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, var(--bg) 0%, rgba(10,10,10,0) 38%); }
+    .content { position: absolute; inset: 0; padding: 50px 64px 30px; display: flex; flex-direction: column; }
 
     .logos { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-    .logos .unrc { height: 100px; }
-    .logos .right { display: flex; align-items: center; gap: 26px; }
-    .logos .right img { height: 112px; width: auto; }
-    .lcazu-mark { font-family: 'Fraunces', serif; font-weight: 700; font-size: 38px; letter-spacing: .05em; color: var(--verde); padding-left: 26px; border-left: 1px solid rgba(255,255,255,0.25); line-height: 1; }
-    .lcazu-mark small { display: block; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 10px; letter-spacing: .12em; color: var(--mut); margin-top: 6px; text-transform: uppercase; }
+    .logos .unrc { height: 88px; }
+    .logos .right { display: flex; align-items: center; gap: 22px; }
+    .logos .right img { height: 96px; width: auto; }
+    .lcazu-mark { font-family: 'Fraunces', serif; font-weight: 700; font-size: 34px; letter-spacing: .05em; color: var(--verde-claro); padding-left: 22px; border-left: 1px solid rgba(255,255,255,0.25); line-height: 1; }
+    .lcazu-mark small { display: block; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 9.5px; letter-spacing: .12em; color: var(--mut); margin-top: 6px; text-transform: uppercase; }
 
-    .kicker { margin-top: 52px; font-size: 17px; font-weight: 600; letter-spacing: .34em; text-transform: uppercase; color: var(--oro); }
-    h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 88px; line-height: 1.04; letter-spacing: -.01em; margin-top: 22px; }
+    .kicker { margin-top: 30px; font-size: 15px; font-weight: 600; letter-spacing: .34em; text-transform: uppercase; color: var(--oro); display: flex; align-items: center; gap: 14px; }
+    .kicker::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--oro), transparent); }
+    h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 70px; line-height: 1.05; letter-spacing: -.01em; margin-top: 14px; }
     h1 em { font-style: italic; color: var(--oro); }
-    .tag { display: inline-block; margin-top: 26px; font-size: 24px; font-weight: 700; letter-spacing: .26em; color: #fff; background: var(--guinda); border-radius: 99px; padding: 12px 30px; box-shadow: 0 12px 34px rgba(105,14,49,.55); align-self: flex-start; }
-    .obj { margin-top: 28px; max-width: 800px; font-size: 20.5px; line-height: 1.5; color: #d9d4cc; }
+    .meta { display: flex; align-items: center; gap: 14px; margin-top: 18px; flex-wrap: wrap; }
+    .tag { font-size: 20px; font-weight: 700; letter-spacing: .24em; color: #fff; background: linear-gradient(90deg, var(--guinda) 0 50%, #2f6f4a 50% 100%); border-radius: 99px; padding: 9px 26px; box-shadow: 0 10px 30px rgba(105,14,49,.45); }
+    .when { font-size: 17px; color: #e8e3da; } .when b { color: var(--verde-claro); }
+    .obj { margin-top: 18px; font-size: 17.5px; line-height: 1.5; color: #d9d4cc; }
     .obj b { color: #fff; }
 
-    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; max-width: 800px; }
-    .chips span { font-size: 15px; font-weight: 500; padding: 8px 16px; border-radius: 99px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.16); color: #ece7df; }
+    .crono { margin-top: 20px; background: rgba(10,10,10,0.7); border: 1px solid rgba(255,255,255,0.14); border-radius: 20px; padding: 16px 18px 14px; backdrop-filter: blur(2px); }
+    .crono-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .crono-h b { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; } .crono-h b::before { content: '🌿 '; }
+    .leg { display: flex; gap: 14px; font-size: 12px; color: var(--mut); } .leg i { font-style: normal; }
+    .days { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .day h3 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: #fff; padding-bottom: 7px; margin-bottom: 4px; border-bottom: 2px solid var(--oro); }
+    .day:nth-child(2) h3 { border-color: var(--verde-claro); } .day:nth-child(3) h3 { border-color: var(--guinda-claro); }
+    .day h3 small { font-family: 'Inter', sans-serif; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--oro); margin-right: 10px; }
+    .row { display: grid; grid-template-columns: 42px 1fr; gap: 8px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .row time { font-size: 12px; font-weight: 700; color: var(--oro); padding-top: 1px; font-variant-numeric: tabular-nums; }
+    .row b { font-size: 11.8px; font-weight: 600; color: #fff; line-height: 1.25; }
+    .row i { font-style: normal; font-size: 8.5px; font-weight: 700; letter-spacing: .08em; margin-left: 6px; padding: 1px 6px; border-radius: 99px; vertical-align: 1px; color: #fff; }
+    .row i.ludm { background: var(--guinda); } .row i.lcazu { background: #2f6f4a; }
+    .row span { display: block; font-size: 10.6px; line-height: 1.25; color: #bdb8af; }
+    .row.brk { background: rgba(181,138,50,0.1); margin: 0 -6px; padding: 4px 6px; border-radius: 6px; }
+    .row.brk b { color: var(--oro); }
 
-    .bottom { margin-top: auto; padding-top: 24px; display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: end; }
-    .info { display: flex; flex-direction: column; gap: 14px; }
-    .box { background: rgba(10,10,10,0.88); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 18px 22px; backdrop-filter: blur(2px); }
-    .box small { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .22em; color: var(--oro); text-transform: uppercase; margin-bottom: 7px; }
-    .box p { font-size: 19px; line-height: 1.45; color: #f1ede6; }
-    .box p span { color: var(--mut); }
-    .qr { background: #fff; border-radius: 26px; padding: 34px 34px 24px; text-align: center; color: #1c0a14; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+    .bottom { margin-top: auto; margin-bottom: 196px; display: grid; grid-template-columns: 1fr 470px; gap: 22px; align-items: stretch; }
+    .info { display: flex; flex-direction: column; gap: 10px; }
+    .box { flex: 1; background: rgba(10,10,10,0.82); border: 1px solid rgba(255,255,255,0.16); border-radius: 16px; padding: 13px 18px; }
+    .box small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .22em; color: var(--oro); text-transform: uppercase; margin-bottom: 5px; }
+    .box p { font-size: 15.5px; line-height: 1.4; color: #f1ede6; } .box p span { color: var(--mut); font-size: 14px; }
+    .qr { background: #fff; border-radius: 22px; padding: 20px; display: grid; grid-template-columns: 196px 1fr; gap: 20px; align-items: center; color: #1c0a14; box-shadow: 0 20px 50px rgba(0,0,0,.6); }
     .qr img { width: 100%; display: block; }
-    .qr .t { margin-top: 14px; font-family: 'Fraunces', serif; font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--guinda); }
-    .qr .u { margin-top: 6px; font-size: 12.5px; font-weight: 600; color: #4a3f45; word-break: break-all; }
-    .foot { margin-top: 20px; display: flex; justify-content: space-between; gap: 20px; font-size: 14px; color: #d8d3cb; background: rgba(10,10,10,0.9); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 14px 20px; }
-    .foot b { color: #fff; font-weight: 600; }
+    .qr .t { font-family: 'Fraunces', serif; font-weight: 700; font-size: 25px; line-height: 1.1; color: var(--guinda); }
+    .qr .t small { display: block; font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 500; color: #4a3f45; margin-top: 8px; line-height: 1.35; }
+    .qr .u { grid-column: 1 / -1; text-align: center; margin-top: -4px; font-size: 14px; font-weight: 700; color: var(--guinda); }
+    .foot { margin-top: 12px; margin-bottom: 36px; display: flex; justify-content: space-between; gap: 16px; font-size: 11.5px; color: #d8d3cb; background: rgba(10,10,10,0.9); border: 1px solid rgba(255,255,255,0.14); border-radius: 12px; padding: 9px 16px; }
+    .foot b { color: #fff; }
 </style>
 </head>
 <body>
 <div class="poster">
-    <div class="grid"></div>
+    <img class="deco" src="decoracion.svg" alt="">
     <div class="city"><img src="fondo-ciudad.svg" alt=""></div>
 
     <div class="content">
@@ -71,29 +89,25 @@
 
         <div class="kicker">Universidad Nacional Rosario Castellanos</div>
         <h1>2do Encuentro de Presentación de <em>Avances de Trabajo Terminal</em></h1>
-        <div class="tag">LUDM · LCAZU</div>
+        <div class="meta"><span class="tag">LUDM · LCAZU</span><span class="when"><b>Lunes 23, martes 24 y miércoles 25</b> · 10:00 a 15:00 h</span></div>
 
         <p class="obj"><b>Fomentar el intercambio académico</b> entre tesistas de Urbanismo y Ciencias Ambientales mediante la presentación y discusión de avances de investigación y otras formas de titulación, promoviendo el diálogo interdisciplinario, la retroalimentación crítica y la generación de propuestas para abordar los retos urbanos y ambientales desde una perspectiva integral y sostenible.</p>
 
-        <div class="chips">
-            <span>Ambiente y territorio</span><span>Cartografía y SIG</span><span>Ordenamiento urbano</span><span>Gestión socioambiental</span><span>Cambio climático</span>
+        <div class="crono">
+            <div class="crono-h"><b>Cronograma de actividades</b><span class="leg"><i><em style="color:#c0457a">●</em> LUDM · Urbanismo</i><i><em style="color:#6bc47f">●</em> LCAZU · Ciencias Ambientales</i></span></div>
+            <div class="days"><div class="day"><h3><small>Día 1</small>Lunes 23</h3><div class="row brk"><time>10:00</time><div><b>Inauguración</b><span>Apertura oficial y presentación de objetivos</span></div></div><div class="row"><time>10:05</time><div><b>Fernanda Nallely Victorica Orduña</b><i class="ludm">LUDM</i><span>Comercio informal y espacio público, Plaza Zarco</span></div></div><div class="row"><time>10:40</time><div><b>Karina Ramírez Ayala</b><i class="lcazu">LCAZU</i><span>Inundaciones, riesgo y vulnerabilidad, Condominio Nacional 55</span></div></div><div class="row"><time>11:15</time><div><b>Martín Pérez Rosales</b><i class="ludm">LUDM</i><span>Presupuesto participativo, Tepalcates II, Iztapalapa</span></div></div><div class="row"><time>11:50</time><div><b>Alejandra Imperia Junco</b><i class="lcazu">LCAZU</i><span>Greenwashing y hábitos de consumo de jóvenes de la UNRC</span></div></div><div class="row brk"><time>12:25</time><div><b>Receso</b><span>Descanso y networking</span></div></div><div class="row"><time>12:40</time><div><b>María José Pérez Cruz</b><i class="ludm">LUDM</i><span>Mujeres y espacio público, San Miguel Teotongo</span></div></div><div class="row"><time>13:15</time><div><b>Guadalupe Hilario Amezquita</b><i class="lcazu">LCAZU</i><span>Almacenamiento de carbono, Sierra de Guadalupe</span></div></div><div class="row"><time>13:50</time><div><b>Litzia Olvera Zambrano</b><i class="ludm">LUDM</i><span>Segregación socioespacial y violencia, Tepito</span></div></div><div class="row brk"><time>14:25</time><div><b>Plenaria de estudiantes</b><span>Diálogo y síntesis de los avances</span></div></div></div><div class="day"><h3><small>Día 2</small>Martes 24</h3><div class="row"><time>10:00</time><div><b>Abraham Cázares Hernández</b><i class="lcazu">LCAZU</i><span>Isla de calor urbana superficial, Iztapalapa</span></div></div><div class="row"><time>10:35</time><div><b>Juan Pablo Calvillo</b><i class="ludm">LUDM</i><span>Tianguis informal y espacio público, col. Juan Escutia</span></div></div><div class="row"><time>11:10</time><div><b>Aldo Esteban Mejía Sandoval</b><i class="lcazu">LCAZU</i><span>Desarrollo inmobiliario y patrimonio biocultural, Fuentes Brotantes</span></div></div><div class="row"><time>11:45</time><div><b>Héctor Juan Arguello Pedraza</b><i class="ludm">LUDM</i><span>Gentrificación en la colonia Roma</span></div></div><div class="row"><time>12:20</time><div><b>María del Rosario Rodríguez Barrera</b><i class="lcazu">LCAZU</i><span>Plan de Acción para proteger a la vaquita marina (SEMARNAT)</span></div></div><div class="row brk"><time>12:55</time><div><b>Receso</b><span>Descanso y networking</span></div></div><div class="row"><time>13:10</time><div><b>Salvador Galván Pérez</b><i class="ludm">LUDM</i><span>Deterioro ambiental y zona construida, Bosques de Aragón</span></div></div><div class="row"><time>13:45</time><div><b>Estudiante de LCAZU</b><i class="lcazu">LCAZU</i><span>Avance de trabajo terminal</span></div></div><div class="row brk"><time>14:20</time><div><b>Plenaria de estudiantes</b><span>Diálogo y síntesis de los avances</span></div></div></div><div class="day"><h3><small>Día 3</small>Miércoles 25</h3><div class="row"><time>10:00</time><div><b>Alberto Mendoza Vázquez</b><i class="ludm">LUDM</i><span>Certificación LEED e impacto ambiental, Torre Reforma</span></div></div><div class="row"><time>10:35</time><div><b>Guadalupe Pérez Téllez</b><i class="lcazu">LCAZU</i><span>Briofitas en un gradiente altitudinal, río Magdalena</span></div></div><div class="row"><time>11:10</time><div><b>Daniela Aimeé Cortés Juárez</b><i class="ludm">LUDM</i><span>Gentrificación habitacional, colonia San Rafael</span></div></div><div class="row"><time>11:45</time><div><b>Jocelyn Sepúlveda Cobaxin</b><i class="lcazu">LCAZU</i><span>Tráfico de trajineras y calidad del agua, Xochimilco</span></div></div><div class="row"><time>12:20</time><div><b>Brenda Georgina Aguiñaga Ramírez</b><i class="ludm">LUDM</i><span>Comercio ambulante y habitabilidad, calle Aztecas</span></div></div><div class="row brk"><time>12:55</time><div><b>Receso</b><span>Descanso y networking</span></div></div><div class="row"><time>13:10</time><div><b>Julián Adán Cardona Díaz</b><i class="lcazu">LCAZU</i><span>Residuos sólidos y de construcción, barranca Tecamachalco</span></div></div><div class="row"><time>13:45</time><div><b>Sarai Lizu Jiménez Fernández</b><i class="ludm">LUDM</i><span>Ciudad de los 15 minutos, Tlatelolco</span></div></div><div class="row brk"><time>14:20</time><div><b>Plenaria de estudiantes</b><span>Diálogo y síntesis de los avances</span></div></div><div class="row brk"><time>14:55</time><div><b>Clausura</b><span>Cierre oficial del encuentro</span></div></div></div></div>
         </div>
 
         <div class="bottom">
             <div class="info">
                 <div class="box"><small>📍 Lugar</small><p>Auditorio de la Unidad Académica GAM, UNRC<br><span>Avenida 506 s/n, Col. San Juan de Aragón II Sección, Alcaldía Gustavo A. Madero, C.P. 07969, Ciudad de México</span></p></div>
-                <div class="box"><small>🗓️ Fecha y horario</small><p id="fecha">Por confirmar</p></div>
+                <div class="box"><small>🗓️ Fecha</small><p>Lunes 23 al miércoles 25 · <span>mes y año por confirmar · programa preliminar</span></p></div>
             </div>
             <div class="qr">
                 <img src="qr-encuentro-tesistas.svg" alt="Código QR a la página del encuentro">
-                <div class="t">Escanea y consulta el programa</div>
+                <div><div class="t">Escanea y consulta el programa<small>Programa completo, ejes temáticos y el Laboratorio Urbano interactivo.</small></div></div>
                 <div class="u">francisco4555.github.io/encuentro-tesistas</div>
             </div>
-        </div>
-
-        <div class="foot">
-            <span><b>LUDM</b> · Licenciatura en Urbanismo y Desarrollo Metropolitano</span>
-            <span><b>LCAZU</b> · Licenciatura en Ciencias Ambientales para Zonas Urbanas</span>
         </div>
     </div>
 </div>
