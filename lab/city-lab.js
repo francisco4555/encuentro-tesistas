@@ -650,8 +650,9 @@
     function setTab(t) {
         openTab = openTab === t ? '' : t;
         ui.body.classList.toggle('open', !!openTab);
+        $('cl-drawer').style.display = openTab ? 'block' : 'none';          // no depende de la hoja de estilos
         root.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === openTab));
-        root.querySelectorAll('[data-pane]').forEach(p => p.classList.toggle('on', p.dataset.pane === openTab));
+        root.querySelectorAll('[data-pane]').forEach(p => { const on = p.dataset.pane === openTab; p.classList.toggle('on', on); p.style.display = on ? 'block' : 'none'; });
         const tt = TABS.find(x => x[0] === openTab); $('cl-dtitle').textContent = tt ? tt[1] + ' ' + tt[2] : '';
         if (openTab === 'chart') drawChart();
         renderCoach.last = null; renderCoach();
