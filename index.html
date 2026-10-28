@@ -102,11 +102,22 @@
         }
 
         .logo img {
-            height: 45px;
+            height: 58px;
             width: auto;
             object-fit: contain;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+            filter: brightness(1.35) contrast(1.05);
         }
+
+        /* Logos sin fondo: el guinda se aclara un poco para leerse sobre el fondo oscuro */
+        .brand-logo {
+            height: 56px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            filter: brightness(1.35) contrast(1.05);
+        }
+        .brand-logo.badge { filter: none; }
+        .brand-logo.sq { height: 76px; }
 
         #ripple-canvas {
             position: fixed;
@@ -479,7 +490,7 @@
     <header id="main-header">
         <div class="nav-wrap">
             <a href="#" class="logo">
-                <img src="assets/logos/logo-unrc-new.jpg" alt="UNRC">
+                <img src="assets/logos/logo-unrc.png" alt="UNRC">
                 <span>Encuentro de Tesistas</span>
             </a>
             <nav class="nav-links">
@@ -809,15 +820,15 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <h4>UNRC</h4>
-                    <img src="assets/logos/logo-unrc-new.jpg" alt="UNRC" style="height: 40px; width: auto; margin-bottom: 15px; object-fit: contain;">
+                    <img src="assets/logos/logo-unrc.png" alt="UNRC" class="brand-logo" style="margin-bottom: 15px;">
                     <p>Universidad Nacional Rosario Castellanos</p>
                     <p>Ciudad de México</p>
                 </div>
                 <div class="footer-col">
                     <h4>LCAZU + LUDM</h4>
-                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                        <img src="assets/logos/logo-lcazu.jpg" alt="LCAZU" style="height: 40px; width: auto; object-fit: contain;">
-                        <img src="assets/logos/logo-ludm.jpg" alt="LUDM" style="height: 40px; width: auto; object-fit: contain;">
+                    <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 10px;">
+                        <img src="assets/logos/logo-lcazu.png" alt="LCAZU" class="brand-logo badge sq">
+                        <img src="assets/logos/logo-ludm.png" alt="LUDM" class="brand-logo sq">
                     </div>
                     <p>Ciencias Ambientales para Zonas Urbanas</p>
                     <p>Urbanismo y Desarrollo Metropolitano</p>
