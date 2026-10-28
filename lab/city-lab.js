@@ -84,7 +84,8 @@
         const h = S.tick % 24, d = Math.floor(S.tick / 24) + 1;
         logLines.unshift('Día ' + d + ' · ' + String(h).padStart(2, '0') + ':00 — ' + msg);
         if (logLines.length > 30) logLines.pop();
-        if (ui.log) ui.log.innerHTML = logLines.slice(0, 7).map(l => '<li>' + l + '</li>').join('');
+        if (ui.log) ui.log.innerHTML = logLines.slice(0, 12).map(l => '<li>' + l + '</li>').join('');
+        if (ui.last) ui.last.innerHTML = '<b>Último aviso:</b> ' + logLines[0];
     }
 
     // ---------- reglas ----------
@@ -484,7 +485,7 @@
         S.budget = m.budget;
         M = { id, start: S.tick, done: false, maxFlood: 0, minQ: 100, fired: {} };
         running = false;
-        if (ui.go) { ui.go.textContent = '▶ Iniciar'; ui.go.classList.remove('run'); }
+        if (ui.go) setGoLabel();
         if (ui.result) ui.result.style.display = 'none';
         syncSliders(); renderMission();
         addLog(m.icon + ' Misión «' + m.name + '». ' + (m.days ? 'Tienes $' + m.budget + ' para preparar la ciudad antes de iniciar.' : 'Haz lo que quieras.'));
@@ -496,7 +497,7 @@
         M.maxFlood = Math.max(M.maxFlood, S.flood); M.minQ = Math.min(M.minQ, S.quality);
         (m.script || []).forEach((e, k) => { if (rel >= e.t && !M.fired[k]) { M.fired[k] = 1; e.fn(); } });
         if (m.days && rel >= m.days * 24) {
-            M.done = true; running = false; ui.go.textContent = '▶ Iniciar'; ui.go.classList.remove('run');
+            M.done = true; running = false; setGoLabel();
             const ok = m.check();
             const stars = ok ? (S.index >= 85 ? 3 : (S.index >= 70 ? 2 : 1)) : 0;
             ui.result.innerHTML = '<h3>' + (ok ? '¡Misión cumplida!' : 'La ciudad no resistió') + '</h3><div class="cl-stars">' + '★'.repeat(stars) + '<span>' + '★'.repeat(3 - stars) + '</span></div><p>' +
@@ -518,22 +519,22 @@
         wetland: ['🌾', 'Humedal', COST.wetland, 'Filtra contaminantes y frena inundaciones. Mejor cerca del río.'],
         station: ['🚒', 'Bomberos', COST.station, 'Apaga incendios en un radio de 8 celdas.'],
         plant: ['🏭', 'Planta de tratamiento', COST.plant, 'Limpia el agua del río en su zona de influencia.'],
-        recycle: ['♻️', 'Centro de reciclaje', COST.recycle, 'Reduce la basura generada en 6 celdas a la redonda.'],
+        recycle: ['♻️', 'Reciclaje', COST.recycle, 'Reduce la basura generada en 6 celdas a la redonda.'],
         clear: ['🧹', 'Limpiar / apagar', COST.clear, 'Quita fuego, basura y contaminación de una celda.'],
         demolish: ['⛏️', 'Demoler', COST.demolish, 'Deja un lote vacío.']
     };
     const EVINFO = [
         ['storm', '⛈️', 'Tormenta', 'Lluvia muy intensa durante 36 horas.'],
         ['fire', '🔥', 'Incendio', 'Enciende un foco en un parque o vivienda.'],
-        ['heat', '🌡️', 'Ola de calor', '+6 °C durante 3 días: más fuego y más riesgo para la gente.'],
-        ['spill', '☣️', 'Derrame industrial', 'Vierte contaminantes al río.'],
+        ['heat', '🌡️', 'Ola de calor', '+6 °C durante 3 días.'],
+        ['spill', '☣️', 'Derrame', 'Vierte contaminantes al río.'],
         ['strike', '🗑️', 'Paro de basura', 'Sin recolección durante 4 días.'],
-        ['sponge', '🌿', 'Ciudad esponja', 'Aplica de golpe infraestructura verde y de respuesta (demostración).']
+        ['sponge', '🌿', 'Ciudad esponja', 'Aplica infraestructura verde de golpe (demo).']
     ];
     const SLIDERS = [
         ['Clima', [
             ['lluvia', 'Frecuencia de lluvia', 0, 100, 5, '%', 'Qué tan seguido llueve.'],
-            ['temp', 'Temperatura base', 18, 38, 1, ' °C', 'Más calor = más incendios y riesgo para la salud.']]],
+            ['temp', 'Temperatura base', 18, 38, 1, ' °C', 'Más calor = más incendios y más riesgo para la salud.']]],
         ['Residuos', [
             ['consumo', 'Generación de residuos', 0, 100, 5, '%', 'Basura que produce cada edificio.'],
             ['colecta', 'Recolección de basura', 0, 100, 5, '%', 'Qué tanta basura se retira.'],
@@ -548,83 +549,119 @@
             ['pop', 'Habitantes (al reiniciar)', 50, 400, 10, '', 'Número de ciudadanos simulados.']]]
     ];
     const flatSliders = SLIDERS.reduce((a, g) => a.concat(g[1]), []);
+    const NOTES = [
+        ['🧩', 'Qué es este modelo', 'Es un <b>modelo basado en agentes</b>, al estilo de NetLogo: una rejilla de celdas (la ciudad) y agentes (los habitantes) que siguen reglas simples. De su interacción surgen inundaciones, incendios o contaminación. Cada paso equivale a <b>1 hora</b>.'],
+        ['🌿', 'Agua y ciudad esponja', 'La lluvia cae en todas las celdas y escurre cuesta abajo hacia el río. Calles y edificios <b>no infiltran</b>; parques, jardines de lluvia, humedales y pavimento permeable <b>sí</b>. El drenaje saca agua de las calles, pero la basura lo tapa. Si el agua se acumula hay inundación y daña a la gente.'],
+        ['🗑️', 'Basura y agua contaminada', 'Los edificios generan basura que se derrama a la calle. La recolección y el reciclaje la reducen. Cuando llueve, el agua <b>lava la basura</b> y la convierte en contaminación. Las industrias descargan al río y la corriente la lleva hacia el este. Humedales, jardines de lluvia y plantas de tratamiento la limpian.'],
+        ['🔥', 'Incendios', 'Pueden iniciar por calor y sequía. El fuego se propaga según el <b>combustible</b> (vegetación, industria, basura), la humedad y el viento. El agua lo apaga y los bomberos lo combaten en un radio de 8 celdas. Lo quemado queda en ruinas.'],
+        ['🌡️', 'Isla de calor', 'Cada superficie suma o resta grados: concreto, calles e industria calientan; árboles, humedales y agua enfrían. Una ola de calor sube la temperatura de toda la ciudad. Usa la vista <b>Calor</b> para ver dónde se concentra.'],
+        ['❤️', 'Ciudadanos y salud', 'Los puntos del mapa son personas que caminan al azar. Pierden salud por fuego, inundación, agua contaminada, calor extremo y basura. Se recuperan poco a poco, más rápido en parques. Verde es sano; rojo, enfermo.'],
+        ['🏙️', 'Índice de sostenibilidad', 'Combina salud (30%), calidad del agua (25%), ausencia de inundación (20%), confort térmico (15%) y ausencia de incendios (10%). Más de 70 es una meta razonable.'],
+        ['⚠️', 'Limitaciones', 'Es un modelo simplificado con fines <b>didácticos</b>. Los valores son ilustrativos: no predice una ciudad real ni sustituye estudios técnicos.']
+    ];
+    const TABS = [['build', '🏗️', 'Construir'], ['events', '⚡', 'Eventos'], ['params', '⚙️', 'Ajustes'], ['chart', '📈', 'Gráfica'], ['model', '📖', 'Modelo']];
+    let openTab = '';
 
     root.innerHTML = `
         <div class="cl-missions" id="cl-missions"></div>
         <div class="cl-goal" id="cl-goal"></div>
+        <div class="cl-steps" id="cl-steps"></div>
+        <div class="cl-coach" id="cl-coach"></div>
         <div class="cl-kpis" id="cl-mon"></div>
-        <div class="cl-wrap">
-            <div class="cl-main">
-                <div class="cl-bar">
-                    <button class="cl-btn cl-go" id="cl-go" title="Inicia o pausa el paso del tiempo">▶ Iniciar</button>
-                    <button class="cl-btn" id="cl-step" title="Avanza una hora">⏭ 1 hora</button>
-                    <button class="cl-btn" id="cl-setup" title="Vuelve a generar la ciudad de esta misión">↺ Reiniciar</button>
-                    <span class="cl-speed" id="cl-speed" title="Velocidad de la simulación"><button data-s="4">🐢</button><button data-s="8" class="on">1×</button><button data-s="16">2×</button><button data-s="30">4×</button></span>
-                    <label class="cl-view">Ver:
-                        <select id="cl-view" title="Cambia lo que muestra el mapa">
-                            <option value="normal">🏙️ Ciudad</option><option value="heat">🌡️ Calor</option>
-                            <option value="water">🌊 Agua e inundación</option><option value="poll">☣️ Contaminación</option><option value="trash">🗑️ Basura</option>
-                        </select>
-                    </label>
-                    <button class="cl-btn" id="cl-help" title="Cómo se juega">❓ Guía</button>
-                    <button class="cl-btn" id="cl-leg" title="Muestra u oculta la leyenda de colores">🎨 Leyenda</button>
-                </div>
-                <div class="cl-clockline"><span id="cl-clock">Día 1 · 08:00</span><span id="cl-hud" class="cl-hud"></span></div>
-                <div class="cl-stage">
-                    <canvas id="cl-canvas"></canvas>
-                    <div class="cl-toast" id="cl-toast"></div>
-                    <div class="cl-guide" id="cl-guide">
-                        <h3>Cómo se juega</h3>
-                        <ol>
-                            <li><b>Elige una misión</b> arriba (o el modo libre) y lee el objetivo.</li>
-                            <li><b>Prepara la ciudad:</b> en la pestaña <em>Construir</em>, elige una herramienta y haz clic o arrastra sobre el mapa. Cada una cuesta presupuesto.</li>
-                            <li><b>Presiona ▶ Iniciar</b> y observa: la gente (puntos) se mueve, llueve, hay basura y fuego.</li>
-                            <li><b>Reacciona:</b> en <em>Eventos</em> provoca desastres, y en <em>Ajustes</em> cambia políticas como recolección, drenaje o bomberos.</li>
-                            <li>Vigila los <b>indicadores</b> de arriba: verde = bien, amarillo = alerta, rojo = crítico.</li>
-                        </ol>
-                        <button class="cl-btn cl-go" id="cl-guide-ok">Entendido, ¡a jugar!</button>
-                    </div>
-                    <div class="cl-result" id="cl-result" style="display:none"></div>
-                </div>
-                <div class="cl-info" id="cl-info"></div>
-                <div class="cl-legend2" id="cl-legend2"></div>
-                <ul class="cl-log" id="cl-log"></ul>
+        <div class="cl-card cl-sim">
+            <div class="cl-bar">
+                <button class="cl-btn cl-go" id="cl-go" title="Inicia o pausa el paso del tiempo">▶ Iniciar simulación</button>
+                <button class="cl-btn" id="cl-step" title="Avanza una hora">⏭ 1 hora</button>
+                <button class="cl-btn" id="cl-setup" title="Vuelve a generar la ciudad de esta misión">↺ Reiniciar</button>
+                <span class="cl-speed" title="Velocidad de la simulación"><button data-s="4">🐢</button><button data-s="8" class="on">1×</button><button data-s="16">2×</button><button data-s="30">4×</button></span>
+                <span class="cl-clockbox"><span id="cl-clock">Día 1 · 08:00</span><span id="cl-hud" class="cl-hud"></span></span>
             </div>
-            <aside class="cl-side">
-                <div class="cl-card cl-panel">
-                    <div class="cl-tabs" id="cl-tabs">
-                        <button data-tab="build" class="on">🏗️ Construir</button><button data-tab="events">⚡ Eventos</button><button data-tab="params">⚙️ Ajustes</button>
+            <div class="cl-bar2">
+                <div class="cl-views" id="cl-views" title="Cambia lo que muestra el mapa"><span>Ver mapa:</span>
+                    <button data-view="normal" class="on">🏙️ Ciudad</button><button data-view="heat">🌡️ Calor</button><button data-view="water">🌊 Agua</button><button data-view="poll">☣️ Contaminación</button><button data-view="trash">🗑️ Basura</button>
+                </div>
+                <div class="cl-tabs" id="cl-tabs">${TABS.map(t => '<button data-tab="' + t[0] + '"><span>' + t[1] + '</span> ' + t[2] + '</button>').join('')}</div>
+            </div>
+            <div class="cl-body" id="cl-body">
+                <div class="cl-mapcol">
+                    <div class="cl-stage">
+                        <canvas id="cl-canvas"></canvas>
+                        <div class="cl-toast" id="cl-toast"></div>
+                        <div class="cl-guide" id="cl-guide">
+                            <h3>Cómo se juega</h3>
+                            <ol>
+                                <li><b>Elige una misión</b> arriba y lee su objetivo.</li>
+                                <li><b>Construye:</b> en la pestaña <em>🏗️ Construir</em> elige una herramienta y haz clic o arrastra sobre el mapa.</li>
+                                <li>Presiona <b>▶ Iniciar simulación</b> y observa cómo reacciona la ciudad.</li>
+                                <li>Sigue el <b>cuadro azul de consejos</b>: te dice qué hacer cuando algo va mal.</li>
+                                <li>La pestaña <em>📖 Modelo</em> explica cómo funciona todo.</li>
+                            </ol>
+                            <button class="cl-btn cl-go" id="cl-guide-ok">Entendido, ¡a jugar!</button>
+                        </div>
+                        <div class="cl-result" id="cl-result" style="display:none"></div>
                     </div>
-                    <div class="cl-tabpane on" data-pane="build">
-                        <p class="cl-help">Elige una herramienta y haz <b>clic o arrastra</b> sobre el mapa.</p>
-                        <div class="cl-toolist" id="cl-tools"></div>
+                    <div class="cl-info" id="cl-info"></div>
+                    <div class="cl-last" id="cl-last"></div>
+                </div>
+                <div class="cl-drawer" id="cl-drawer">
+                    <div class="cl-dh"><b id="cl-dtitle"></b><button id="cl-dclose" title="Cerrar panel">✕</button></div>
+                    <div class="cl-dp" data-pane="build">
+                        <div class="cl-tooldesc" id="cl-tooldesc"></div>
+                        <div class="cl-toolgrid" id="cl-tools"></div>
                     </div>
-                    <div class="cl-tabpane" data-pane="events">
+                    <div class="cl-dp" data-pane="events">
                         <p class="cl-help">Pon a prueba tu ciudad provocando situaciones.</p>
-                        <div class="cl-evlist" id="cl-events"></div>
+                        <div class="cl-evgrid" id="cl-events"></div>
+                        <h5 class="cl-h5">Historial</h5>
+                        <ul class="cl-log" id="cl-log"></ul>
                     </div>
-                    <div class="cl-tabpane" data-pane="params">
-                        <p class="cl-help">Cambia las políticas de la ciudad. Los cambios se aplican al instante.</p>
+                    <div class="cl-dp" data-pane="params">
+                        <p class="cl-help">Cambia las políticas de la ciudad. Se aplican al instante.</p>
                         <div id="cl-sliders"></div>
                         <label class="cl-sl"><span>Viento</span><span class="cl-d">Empuja el fuego en su dirección.</span>
                             <select id="cl-viento"><option value="calma">Calma</option><option value="norte">Norte</option><option value="sur">Sur</option><option value="este">Este</option><option value="oeste">Oeste</option></select>
                         </label>
                     </div>
+                    <div class="cl-dp" data-pane="chart">
+                        <p class="cl-help">Todas las líneas suben cuando la ciudad mejora.</p>
+                        <canvas id="cl-chart" width="320" height="170"></canvas>
+                        <div class="cl-legend"><span style="--c:#5fd38d">Salud</span><span style="--c:#4aa3ff">Agua limpia</span><span style="--c:#b58aff">Sin inundación</span><span style="--c:#ff9a4a">Confort térmico</span></div>
+                    </div>
+                    <div class="cl-dp" data-pane="model">
+                        <details class="cl-acc" open><summary>🎨 Leyenda del mapa</summary><div class="cl-legend2" id="cl-legend2"></div></details>
+                        ${NOTES.map(n => '<details class="cl-acc"><summary>' + n[0] + ' ' + n[1] + '</summary><p>' + n[2] + '</p></details>').join('')}
+                        <button class="cl-btn" id="cl-help" style="margin-top:.6rem">❓ Ver la guía de inicio</button>
+                    </div>
                 </div>
-                <div class="cl-card">
-                    <h4>Evolución en el tiempo</h4>
-                    <canvas id="cl-chart" width="320" height="130"></canvas>
-                    <div class="cl-legend"><span style="--c:#5fd38d">Salud</span><span style="--c:#4aa3ff">Agua limpia</span><span style="--c:#b58aff">Sin inundación</span><span style="--c:#ff9a4a">Confort térmico</span></div>
-                    <p class="cl-help" style="margin-top:.5rem">Todas las líneas suben cuando la ciudad mejora.</p>
-                </div>
-            </aside>
+            </div>
         </div>`;
     const $ = id => root.querySelector('#' + id);
     ui.canvas = $('cl-canvas'); ui.log = $('cl-log'); ui.mon = $('cl-mon'); ui.info = $('cl-info'); ui.clock = $('cl-clock'); ui.hud = $('cl-hud');
     ui.chart = $('cl-chart'); ui.go = $('cl-go'); ui.toast = $('cl-toast'); ui.guide = $('cl-guide'); ui.result = $('cl-result'); ui.goal = $('cl-goal');
+    ui.last = $('cl-last'); ui.coach = $('cl-coach'); ui.steps = $('cl-steps'); ui.body = $('cl-body');
+
+    function setGoLabel() {
+        const started = S.tick > M.start;
+        ui.go.textContent = running ? '⏸ Pausar' : (started ? '▶ Continuar' : '▶ Iniciar simulación');
+        ui.go.classList.toggle('run', running);
+    }
+
+    // pestañas del panel (se abre y se cierra)
+    function setTab(t) {
+        openTab = openTab === t ? '' : t;
+        ui.body.classList.toggle('open', !!openTab);
+        root.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === openTab));
+        root.querySelectorAll('[data-pane]').forEach(p => p.classList.toggle('on', p.dataset.pane === openTab));
+        const tt = TABS.find(x => x[0] === openTab); $('cl-dtitle').textContent = tt ? tt[1] + ' ' + tt[2] : '';
+        if (openTab === 'chart') drawChart();
+        renderCoach.last = null; renderCoach();
+        setTimeout(resize, 0);
+    }
+    root.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+    $('cl-dclose').addEventListener('click', () => setTab(openTab));
 
     // misiones (selector)
-    $('cl-missions').innerHTML = Object.keys(MISSIONS).map(id => '<button data-m="' + id + '"><span>' + MISSIONS[id].icon + '</span><b>' + MISSIONS[id].name + '</b><small>' + (MISSIONS[id].days ? 'Misión · ' + MISSIONS[id].days + ' días' : 'Sin objetivo') + '</small></button>').join('');
+    $('cl-missions').innerHTML = Object.keys(MISSIONS).map(id => '<button data-m="' + id + '"><span>' + MISSIONS[id].icon + '</span><b>' + MISSIONS[id].name + '</b></button>').join('');
     root.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { loadMission(b.dataset.m); ui.guide.style.display = 'none'; }));
     function renderMission() {
         root.querySelectorAll('[data-m]').forEach(b => b.classList.toggle('on', b.dataset.m === M.id));
@@ -632,11 +669,34 @@
     }
     function updateGoal() {
         const m = MISSIONS[M.id], rel = Math.max(0, S.tick - M.start), day = Math.min(m.days, rel / 24);
-        let h = '<div class="cl-goal-t"><b>' + m.icon + ' ' + m.name + '</b>' + (m.days ? '<span>Día ' + Math.min(m.days, Math.floor(day) + 1) + ' de ' + m.days + '</span>' : '') + '</div><p>' + m.goal + '</p>';
-        if (m.days) {
-            h += '<div class="cl-prog"><i style="width:' + (day / m.days * 100) + '%"></i></div><div class="cl-chips">' + m.live().map(c => '<span class="' + (c.ok ? 'ok' : 'bad') + '">' + (c.ok ? '✔' : '✖') + ' ' + c.k + ': ' + c.v + '</span>').join('') + '</div>';
-        }
+        let h = '<div class="cl-goal-t"><b>🎯 Objetivo</b>' + (m.days ? '<span>Día ' + Math.min(m.days, Math.floor(day) + 1) + ' de ' + m.days + '</span>' : '') + '</div><p>' + m.goal + '</p>';
+        if (m.days) h += '<div class="cl-prog"><i style="width:' + (day / m.days * 100) + '%"></i></div><div class="cl-chips">' + m.live().map(c => '<span class="' + (c.ok ? 'ok' : 'bad') + '">' + (c.ok ? '✔' : '✖') + ' ' + c.k + ': ' + c.v + '</span>').join('') + '</div>';
         ui.goal.innerHTML = h;
+    }
+    function renderSteps() {
+        const started = S.tick > M.start, st = M.done ? 3 : (started ? 3 : 2);
+        const s = (n, t, on, done) => '<span class="' + (on ? 'on ' : '') + (done ? 'done' : '') + '"><i>' + (done ? '✔' : n) + '</i>' + t + '</span>';
+        ui.steps.innerHTML = s(1, 'Elige misión', false, true) + s(2, 'Construye', st === 2, st > 2) + s(3, 'Simula y reacciona', st === 3, M.done);
+    }
+    function coach() {
+        const started = S.tick > M.start;
+        if (M.done) return { t: '🏁 La misión terminó. Usa ↺ Reiniciar para reintentar o elige otra misión arriba.' };
+        if (S.burning > 0) return { t: '🔥 ¡Hay un incendio! Construye 🚒 Bomberos cerca, o usa 🧹 Limpiar / apagar sobre las llamas.', tab: 'build' };
+        if (S.flood > 5) return { t: '🌊 La ciudad se está inundando. Prueba 💧 Jardines de lluvia, 🛣️ Pavimento permeable o 🌾 Humedales, y sube el drenaje en Ajustes.', tab: 'build' };
+        if (S.quality < 50) return { t: '☣️ El río está contaminado. Construye 🏭 Planta de tratamiento o 🌾 Humedales, o baja las descargas industriales en Ajustes.', tab: 'build' };
+        if (S.Tmax > 38) return { t: '🌡️ Hace mucho calor. Planta 🌳 Parques y 🌾 Humedales; mira la vista 🌡️ Calor para ubicar las zonas más calientes.', tab: 'build' };
+        if (S.trashAvg > 0.3) return { t: '🗑️ Se acumula la basura. Sube la recolección o el reciclaje en Ajustes, o construye ♻️ Reciclaje.', tab: 'params' };
+        if (!started) return { t: openTab === 'build' ? '👉 Paso 2: elige una herramienta del panel de la derecha y haz clic o arrastra sobre el mapa. Cuando estés listo, presiona ▶ Iniciar simulación.' : '👉 Paso 2: abre 🏗️ Construir, elige una herramienta y haz clic o arrastra sobre el mapa. Cuando estés listo, presiona ▶ Iniciar simulación.', tab: openTab === 'build' ? '' : 'build' };
+        if (running) return { t: '👀 Observa cómo reacciona la ciudad. Si algún indicador se pone en rojo, aquí te diré qué hacer.' };
+        return { t: '⏸ Simulación en pausa. Puedes seguir construyendo o presionar ▶ Continuar.' };
+    }
+    function renderCoach() {
+        const c = coach();
+        const sig = c.t + '|' + (c.tab || '');
+        if (sig === renderCoach.last) return; renderCoach.last = sig;
+        ui.coach.innerHTML = '<span>' + c.t + '</span>' + (c.tab ? '<button data-open="' + c.tab + '">Abrir ' + TABS.find(x => x[0] === c.tab)[2] + '</button>' : '');
+        const b = ui.coach.querySelector('[data-open]');
+        if (b) b.addEventListener('click', () => { if (openTab !== b.dataset.open) setTab(b.dataset.open); });
     }
 
     // sliders agrupados
@@ -650,40 +710,43 @@
         $('cl-viento').value = P.viento;
     }
     $('cl-viento').addEventListener('change', e => { P.viento = e.target.value; });
-    $('cl-view').addEventListener('change', e => { view = e.target.value; updateLegend(); });
+
+    // vistas del mapa
+    root.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => {
+        view = b.dataset.view; root.querySelectorAll('[data-view]').forEach(x => x.classList.toggle('on', x === b)); updateLegend();
+    }));
 
     // herramientas y eventos
-    $('cl-tools').innerHTML = Object.keys(TOOLINFO).map(k => { const t = TOOLINFO[k]; return '<button data-tool="' + k + '"' + (k === 'inspect' ? ' class="on"' : '') + '><span class="ic">' + t[0] + '</span><span class="tx"><b>' + t[1] + '</b><small>' + t[3] + '</small></span>' + (t[2] !== '' ? '<i>$' + t[2] + '</i>' : '') + '</button>'; }).join('');
-    $('cl-events').innerHTML = EVINFO.map(e => '<button data-ev="' + e[0] + '"' + (e[0] === 'sponge' ? ' class="cl-accent"' : '') + '><span class="ic">' + e[1] + '</span><span class="tx"><b>' + e[2] + '</b><small>' + e[3] + '</small></span></button>').join('');
+    $('cl-tools').innerHTML = Object.keys(TOOLINFO).map(k => { const t = TOOLINFO[k]; return '<button data-tool="' + k + '"' + (k === 'inspect' ? ' class="on"' : '') + ' title="' + t[3] + '"><span class="ic">' + t[0] + '</span><b>' + t[1] + '</b>' + (t[2] !== '' ? '<i>$' + t[2] + '</i>' : '') + '</button>'; }).join('');
+    $('cl-events').innerHTML = EVINFO.map(e => '<button data-ev="' + e[0] + '"' + (e[0] === 'sponge' ? ' class="cl-accent"' : '') + '><span class="ic">' + e[1] + '</span><b>' + e[2] + '</b><small>' + e[3] + '</small></button>').join('');
+    function updateToolDesc() {
+        const t = TOOLINFO[tool];
+        $('cl-tooldesc').innerHTML = '<b>' + t[0] + ' ' + t[1] + (t[2] !== '' ? ' · $' + t[2] : '') + '</b><span>' + t[3] + '</span>' + (tool === 'inspect' ? '' : '<em>👆 Ahora haz clic o arrastra sobre el mapa.</em>');
+    }
     root.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => {
         tool = b.dataset.tool; root.querySelectorAll('[data-tool]').forEach(x => x.classList.toggle('on', x === b));
         ui.canvas.style.touchAction = tool === 'inspect' ? 'pan-y' : 'none';
         ui.canvas.style.cursor = tool === 'inspect' ? 'crosshair' : 'copy';
-        ui.guide.style.display = 'none'; updateInfo();
+        ui.guide.style.display = 'none'; updateToolDesc(); updateInfo();
     }));
     const EVS = { fire: evFire, storm: evStorm, heat: evHeat, spill: evSpill, strike: evStrike, sponge: evSponge };
     root.querySelectorAll('[data-ev]').forEach(b => b.addEventListener('click', () => { EVS[b.dataset.ev](); ui.guide.style.display = 'none'; }));
-    root.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => {
-        root.querySelectorAll('[data-tab]').forEach(x => x.classList.toggle('on', x === b));
-        root.querySelectorAll('[data-pane]').forEach(x => x.classList.toggle('on', x.dataset.pane === b.dataset.tab));
-    }));
 
     // controles de simulación
     ui.go.addEventListener('click', () => {
-        if (M.done) { toast('La misión terminó: usa Reintentar o elige otra'); return; }
-        running = !running; ui.go.textContent = running ? '⏸ Pausar' : '▶ Iniciar'; ui.go.classList.toggle('run', running); ui.guide.style.display = 'none';
+        if (M.done) { toast('La misión terminó: usa Reiniciar o elige otra'); return; }
+        running = !running; setGoLabel(); ui.guide.style.display = 'none';
     });
-    $('cl-step').addEventListener('click', () => { if (!M.done) step(); ui.guide.style.display = 'none'; });
+    $('cl-step').addEventListener('click', () => { if (!M.done) { step(); setGoLabel(); } ui.guide.style.display = 'none'; });
     $('cl-setup').addEventListener('click', () => loadMission(M.id));
     $('cl-help').addEventListener('click', () => { ui.guide.style.display = ''; });
-    $('cl-leg').addEventListener('click', () => { const l = $('cl-legend2'); l.style.display = l.style.display === 'none' ? '' : 'none'; });
     $('cl-guide-ok').addEventListener('click', () => { ui.guide.style.display = 'none'; });
     root.querySelectorAll('[data-s]').forEach(b => b.addEventListener('click', () => {
         P.speed = +b.dataset.s; root.querySelectorAll('[data-s]').forEach(x => x.classList.toggle('on', x === b));
     }));
 
     let toastT = 0;
-    function toast(m) { ui.toast.textContent = m; ui.toast.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => ui.toast.classList.remove('on'), 1600); }
+    function toast(m) { ui.toast.textContent = m; ui.toast.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => ui.toast.classList.remove('on'), 2200); }
 
     // leyenda del mapa
     function updateLegend() {
@@ -693,9 +756,9 @@
         else if (view === 'water') h = sw('rgb(70,150,255)', 'Agua sobre la calle (inundación)') + sw('rgb(165,70,210)', 'Agua contaminada');
         else if (view === 'poll') h = sw('rgb(165,70,210)', 'Contaminación (más intenso = peor)');
         else if (view === 'trash') h = sw('rgb(210,150,70)', 'Basura acumulada');
-        else h = sw(COL[2], 'Vivienda') + sw(COL[3], 'Comercio') + sw(COL[4], 'Industria') + sw(COL[5], 'Parque') + sw(COL[1], 'Calle') + sw(COL[6], 'Río') + sw(COL[8], 'Jardín de lluvia / humedal') +
-            sw(COL[10], 'Bomberos') + sw(COL[11], 'Planta de tratamiento') + sw(COL[12], 'Reciclaje') + sw(COL[13], 'Ruinas') +
-            sw('rgba(70,150,255,.8)', 'Agua') + sw('rgba(165,70,210,.8)', 'Contaminación') + sw('#8c643c', 'Basura') + sw('#ff7a14', 'Fuego') + '<span><i class="dot" style="background:hsl(120,85%,55%)"></i><i class="dot" style="background:hsl(60,85%,55%)"></i><i class="dot" style="background:hsl(0,85%,55%)"></i>Personas: sana → enferma</span>';
+        else h = sw('#e0cda3', 'Vivienda') + sw('#5d7fb8', 'Comercio / torres') + sw('#85746a', 'Industria') + sw('#3f8a55', 'Parque / árboles') + sw(COL[1], 'Calle') + sw(COL[6], 'Río') + sw('#6ebeff', 'Jardín de lluvia / humedal') +
+            sw(COL[10], 'Bomberos') + sw('#2a8f8f', 'Planta de tratamiento') + sw('#3f9a44', 'Reciclaje') + sw(COL[13], 'Ruinas') +
+            sw('rgba(70,150,255,.8)', 'Agua') + sw('rgba(165,70,210,.8)', 'Contaminación') + sw('#1f2326', 'Basura') + sw('#ff7a14', 'Fuego') + '<span><i class="dot" style="background:hsl(120,85%,55%)"></i><i class="dot" style="background:hsl(60,85%,55%)"></i><i class="dot" style="background:hsl(0,85%,55%)"></i>Personas: sana → enferma</span>';
         $('cl-legend2').innerHTML = h;
     }
 
@@ -915,36 +978,40 @@
             const i = idx(hover[0], hover[1]);
             ui.info.innerHTML = '<b>' + NAMES[type[i]] + '</b> en (' + hover[0] + ',' + hover[1] + '): ' + (S.Tg + heatA[i]).toFixed(1) + ' °C · agua ' + water[i].toFixed(2) + ' · contaminación ' + (type[i] === T.RIVER ? pm[i] / Math.max(water[i], 0.3) : pm[i]).toFixed(2) + ' · basura ' + trash[i].toFixed(2) + (fire[i] > 0 ? ' · 🔥 ardiendo' : '');
         } else if (tool === 'inspect') {
-            ui.info.innerHTML = '👆 Pasa el cursor (o toca) el mapa para inspeccionar una celda. Para construir, elige una herramienta en <b>🏗️ Construir</b>.';
+            ui.info.innerHTML = '👆 Pasa el cursor (o toca) el mapa para inspeccionar una celda.';
         } else {
             const t = TOOLINFO[tool];
-            ui.info.innerHTML = '<b>' + t[0] + ' ' + t[1] + '</b> ($' + t[2] + ') — ' + t[3] + ' <b>Haz clic o arrastra sobre el mapa.</b>';
+            ui.info.innerHTML = '<b>' + t[0] + ' ' + t[1] + '</b> — haz clic o arrastra sobre el mapa para construir.';
         }
     }
 
     function updateUI() {
         const d = Math.floor(S.tick / 24) + 1, h = S.tick % 24;
-        ui.clock.textContent = '🕒 Día ' + d + ' · ' + String(h).padStart(2, '0') + ':00 · ' + (running ? 'en marcha' : 'en pausa');
+        ui.clock.textContent = '🕒 Día ' + d + ' · ' + String(h).padStart(2, '0') + ':00';
         const chips = [];
         if (S.rain > 0) chips.push('<em class="b">🌧️ Lluvia</em>');
         if (S.heatLeft > 0) chips.push('<em class="r">🌡️ Ola de calor</em>');
-        if (S.strikeLeft > 0) chips.push('<em class="y">🗑️ Paro de basura</em>');
-        if (S.burning > 0) chips.push('<em class="r">🔥 ' + S.burning + ' celdas ardiendo</em>');
-        if (P.viento !== 'calma') chips.push('<em>💨 Viento ' + P.viento + '</em>');
+        if (S.strikeLeft > 0) chips.push('<em class="y">🗑️ Paro</em>');
+        if (S.burning > 0) chips.push('<em class="r">🔥 ' + S.burning + ' ardiendo</em>');
+        if (P.viento !== 'calma') chips.push('<em>💨 ' + P.viento + '</em>');
         ui.hud.innerHTML = chips.join('');
-        const card = (ic, k, v, cls, tip, sub) => '<div class="cl-k ' + cls + '" title="' + tip + '"><span class="ic">' + ic + '</span><div><small>' + k + '</small><b>' + v + '</b>' + (sub ? '<u>' + sub + '</u>' : '') + '</div></div>';
         const lvl = v => v >= 70 ? 'ok' : (v >= 40 ? 'warn' : 'bad');
+        const k = (ic, name, v, cls, tip) => '<div class="cl-k ' + cls + '" data-tip="' + tip + '"><span class="ic">' + ic + '</span><div><small>' + name + '</small><b>' + v + '</b></div></div>';
         ui.mon.innerHTML =
-            card('🏙️', 'Índice de sostenibilidad', S.index.toFixed(0) + '<s>/100</s>', lvl(S.index) + ' big', 'Resume salud, agua, inundación, calor e incendios. Más alto es mejor.', 'Meta: más de 70') +
-            card('❤️', 'Salud ciudadana', S.health.toFixed(0) + '%', lvl(S.health), 'Salud promedio de los habitantes (puntos del mapa).', 'Afectados graves: ' + S.victims) +
-            card('💧', 'Agua del río limpia', S.quality.toFixed(0) + '%', lvl(S.quality), 'Calidad del agua del río. Baja con descargas, basura y escurrimiento sucio.', '') +
-            card('🌊', 'Suelo inundado', S.flood.toFixed(1) + '%', S.flood < 3 ? 'ok' : (S.flood < 10 ? 'warn' : 'bad'), 'Porcentaje del suelo urbano cubierto por agua. Menos es mejor.', '') +
-            card('🌡️', 'Temperatura', S.Tmean.toFixed(0) + ' °C', S.Tmax < 36 ? 'ok' : (S.Tmax < 40 ? 'warn' : 'bad'), 'Temperatura media actual de la ciudad.', 'Máx. ' + S.Tmax.toFixed(0) + ' °C') +
-            card('🔥', 'Incendios', S.burning + ' activos', S.burning === 0 ? 'ok' : 'bad', 'Celdas ardiendo ahora mismo.', 'Ruinas: ' + S.ruins) +
-            card('🗑️', 'Basura acumulada', S.trashAvg.toFixed(2), S.trashAvg < 0.2 ? 'ok' : (S.trashAvg < 0.5 ? 'warn' : 'bad'), 'Basura media por celda. Si sube, tapa el drenaje y contamina el agua.', '') +
-            card('💰', 'Presupuesto', '$' + S.budget.toFixed(0), '', 'Dinero disponible para construir. Crece mientras la ciudad esté sana.', '');
-        updateGoal(); updateInfo(); drawChart();
+            k('🏙️', 'Índice', S.index.toFixed(0) + '<s>/100</s>', lvl(S.index) + ' big', 'Índice de sostenibilidad: resume salud, agua, inundación, calor e incendios. Más alto es mejor; la meta es más de 70.') +
+            k('❤️', 'Salud', S.health.toFixed(0) + '%', lvl(S.health), 'Salud promedio de los habitantes (los puntos del mapa). Afectados graves: ' + S.victims + '.') +
+            k('💧', 'Agua limpia', S.quality.toFixed(0) + '%', lvl(S.quality), 'Calidad del agua del río. Baja con descargas industriales, basura y escurrimiento sucio.') +
+            k('🌊', 'Inundado', S.flood.toFixed(1) + '%', S.flood < 3 ? 'ok' : (S.flood < 10 ? 'warn' : 'bad'), 'Porcentaje del suelo urbano cubierto por agua. Menos es mejor.') +
+            k('🌡️', 'Temperatura', S.Tmean.toFixed(0) + ' °C', S.Tmax < 36 ? 'ok' : (S.Tmax < 40 ? 'warn' : 'bad'), 'Temperatura media actual. Máxima en la ciudad: ' + S.Tmax.toFixed(0) + ' °C.') +
+            k('🔥', 'Incendios', S.burning + ' · ruinas ' + S.ruins, S.burning === 0 ? 'ok' : 'bad', 'Celdas ardiendo ahora mismo y edificios destruidos acumulados.') +
+            k('🗑️', 'Basura', S.trashAvg.toFixed(2), S.trashAvg < 0.2 ? 'ok' : (S.trashAvg < 0.5 ? 'warn' : 'bad'), 'Basura media por celda. Si sube, tapa el drenaje y contamina el agua.') +
+            k('💰', 'Presupuesto', '$' + S.budget.toFixed(0), 'money', 'Dinero para construir. Crece mientras la ciudad esté sana.');
+        updateGoal(); renderSteps(); renderCoach(); setGoLabel(); updateInfo();
+        if (openTab === 'chart') drawChart();
     }
+    // al tocar un indicador se muestra su explicación
+    ui.mon.addEventListener('click', e => { const c = e.target.closest('[data-tip]'); if (c) toast(c.dataset.tip); });
+    ui.mon.addEventListener('mouseover', e => { const c = e.target.closest('[data-tip]'); ui.mon.title = c ? c.dataset.tip : ''; });
 
     function drawChart() {
         const c = ui.chart, g = c.getContext('2d'), W = c.width, H = c.height;
@@ -978,7 +1045,7 @@
         new IntersectionObserver(es => { visible = es[0].isIntersecting; window.__labActive = visible && es[0].intersectionRatio > 0.5; }, { threshold: [0, 0.5] }).observe(root);
     } else visible = true;
 
-    loadMission('tormenta'); updateLegend(); updateUI();
+    loadMission('tormenta'); updateLegend(); setTab('build'); updateToolDesc(); updateUI();
     requestAnimationFrame(frame);
 
     window.CityLab = { step, setup, P, get S() { return S; }, evStorm, evFire, evHeat, evSpill, evStrike, evSponge, setType: (x, y, t) => { type[idx(x, y)] = t; }, get type() { return type; }, COLS, ROWS, T };
