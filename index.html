@@ -105,16 +105,16 @@
             height: 58px;
             width: auto;
             object-fit: contain;
-            filter: brightness(1.35) contrast(1.05);
+            filter: none;
         }
 
-        /* Logos sin fondo: el guinda se aclara un poco para leerse sobre el fondo oscuro */
+        /* Logos vectoriales (SVG) sin fondo; versión con colores aclarados para fondo oscuro */
         .brand-logo {
             height: 56px;
             width: auto;
             object-fit: contain;
             display: block;
-            filter: brightness(1.35) contrast(1.05);
+            filter: none;
         }
         .brand-logo.badge { filter: none; }
         .brand-logo.sq { height: 76px; }
@@ -490,7 +490,7 @@
     <header id="main-header">
         <div class="nav-wrap">
             <a href="#" class="logo">
-                <img src="assets/logos/logo-unrc.png" alt="UNRC">
+                <img src="assets/logos/logo-unrc.svg" alt="UNRC">
                 <span>Encuentro de Tesistas</span>
             </a>
             <nav class="nav-links">
@@ -820,7 +820,7 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <h4>UNRC</h4>
-                    <img src="assets/logos/logo-unrc.png" alt="UNRC" class="brand-logo" style="margin-bottom: 15px;">
+                    <img src="assets/logos/logo-unrc.svg" alt="UNRC" class="brand-logo" style="margin-bottom: 15px;">
                     <p>Universidad Nacional Rosario Castellanos</p>
                     <p>Ciudad de México</p>
                 </div>
@@ -828,7 +828,7 @@
                     <h4>LCAZU + LUDM</h4>
                     <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 10px;">
                         <img src="assets/logos/logo-lcazu.png" alt="LCAZU" class="brand-logo badge sq">
-                        <img src="assets/logos/logo-ludm.png" alt="LUDM" class="brand-logo sq">
+                        <img src="assets/logos/logo-ludm.svg" alt="LUDM" class="brand-logo sq">
                     </div>
                     <p>Ciencias Ambientales para Zonas Urbanas</p>
                     <p>Urbanismo y Desarrollo Metropolitano</p>
