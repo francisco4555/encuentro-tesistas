@@ -18,6 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="lab/city-lab.css">
     <style>
         :root {
             --primary: #690E31;
@@ -494,6 +495,26 @@
             .nav-links { display: none; }
             .hero h1 { font-size: 3.5rem; }
         }
+
+        @media (max-width: 600px) {
+            .nav-wrap { padding: 0 1rem; }
+            .logo span { display: none; }
+            .logo img { height: 44px; }
+            .hero-content { padding: 0 1.25rem; }
+            .eyebrow { font-size: 0.68rem; letter-spacing: 0.12rem; }
+            .hero h1 { font-size: clamp(2.4rem, 12vw, 3.5rem); }
+            .container { padding: 0 1.25rem; }
+            #laboratorio { padding: 80px 0; }
+            .cl-main { padding: 0.7rem; }
+            .tab { padding: 0.8rem 1.3rem; }
+            .timeline-item { grid-template-columns: 1fr; gap: 0.5rem; }
+            .timeline-time { text-align: left; }
+            .timeline-item:hover { transform: none; }
+            .timeline-content { padding: 1.1rem 1.2rem; }
+            .timeline-content h4 { font-size: 1.15rem; }
+            .btn-group { flex-wrap: wrap; gap: 0.8rem; }
+            .btn { padding: 1rem 1.6rem; font-size: 0.85rem; }
+        }
     </style>
 </head>
 <body>
@@ -509,6 +530,7 @@
             </a>
             <nav class="nav-links">
                 <a href="#sobre">Sobre</a>
+                <a href="#laboratorio">Laboratorio</a>
                 <a href="#ejes">Ejes</a>
                 <a href="#programa">Programa</a>
                 <a href="#faq">FAQ</a>
@@ -539,10 +561,27 @@
                 </div>
             </div>
             <div class="reveal" style="text-align:center">
-                <!-- Espacio para interactuar con el fondo 3D -->
-                <div style="font-size: 0.9rem; color: var(--text-muted); border: 1px dashed var(--secondary); padding: 2rem; border-radius: 20px;">
-                    Mueve el mouse para navegar el territorio digital 3D en el fondo.
-                </div>
+                <p style="font-size: 0.9rem; color: var(--text-muted); border: 1px dashed var(--secondary); padding: 2rem; border-radius: 20px; margin-bottom: 1.2rem;">
+                    Mueve el mouse para navegar el territorio digital 3D en el fondo, o entra al laboratorio y juega con la ciudad.
+                </p>
+                <a href="#laboratorio" class="btn btn-primary">Abrir el Laboratorio Urbano</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="laboratorio">
+        <div class="container">
+            <div class="lab-intro reveal">
+                <span class="eyebrow">Laboratorio Urbano</span>
+                <h2>Juega con la ciudad</h2>
+                <p>Un modelo basado en agentes, al estilo NetLogo: ajusta los parámetros, provoca eventos y construye infraestructura verde para ver cómo responden el agua, el fuego, la basura y la salud de la población. Tu reto: lograr un índice de sostenibilidad alto aun bajo tormentas, olas de calor e incendios.</p>
+            </div>
+            <div id="city-lab"></div>
+            <div class="lab-notes">
+                <div><h5>🌿 Ciudad esponja</h5>Pavimento permeable, jardines de lluvia y humedales infiltran el agua donde cae: menos escurrimiento, menos inundación y agua más limpia.</div>
+                <div><h5>🔥 Incendios</h5>El calor, la sequía, el viento y la basura acumulada alimentan el fuego. Bomberos, humedad y áreas verdes bien ubicadas lo frenan.</div>
+                <div><h5>🗑️ Basura y agua</h5>La basura tapa el drenaje y, al lavarse con la lluvia, contamina el río. Recolección y reciclaje cortan el problema de raíz.</div>
+                <div><h5>🌡️ Isla de calor</h5>El concreto retiene calor; el arbolado y el agua lo reducen. Cambia a la «Vista Calor» para ver las diferencias.</div>
             </div>
         </div>
     </section>
@@ -974,7 +1013,7 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            if (document.hidden) return;
+            if (document.hidden || window.__labActive) return;
 
             // Smooth rotation based on mouse
             const targetRotX = mouseY * 0.0005;
@@ -1148,5 +1187,6 @@
         init3D();
         animate();
     </script>
+    <script src="lab/city-lab.js"></script>
 </body>
 </html>
