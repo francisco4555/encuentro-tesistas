@@ -445,8 +445,8 @@
 
         .footer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2.5rem;
             margin-bottom: 3rem;
         }
 
@@ -454,6 +454,20 @@
             color: var(--secondary);
             margin-bottom: 1.5rem;
         }
+
+        /* LCAZU no tiene logotipo: marca tipográfica a juego con la identidad de la página */
+        .wordmark {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            font-size: 2.6rem;
+            line-height: 76px;
+            height: 76px;
+            letter-spacing: 0.04em;
+            color: var(--accent-green);
+            margin-bottom: 10px;
+        }
+
+        .footer-col p { margin-top: 10px; }
 
         .footer-bottom {
             text-align: center;
@@ -825,13 +839,19 @@
                     <p>Ciudad de México</p>
                 </div>
                 <div class="footer-col">
-                    <h4>LCAZU + LUDM</h4>
-                    <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 10px;">
-                        <img src="assets/logos/logo-lcazu.png" alt="LCAZU" class="brand-logo badge sq">
-                        <img src="assets/logos/logo-ludm.svg" alt="LUDM" class="brand-logo sq">
-                    </div>
-                    <p>Ciencias Ambientales para Zonas Urbanas</p>
-                    <p>Urbanismo y Desarrollo Metropolitano</p>
+                    <h4>Línea de investigación</h4>
+                    <img src="assets/logos/logo-lcazu.png" alt="Línea de investigación: Conflictos socioterritoriales-ambientales y políticas de planificación urbana" class="brand-logo badge sq">
+                    <p>Conflictos socioterritoriales-ambientales y políticas de planificación urbana</p>
+                </div>
+                <div class="footer-col">
+                    <h4>LUDM</h4>
+                    <img src="assets/logos/logo-ludm.svg" alt="LUDM" class="brand-logo sq">
+                    <p>Licenciatura en Urbanismo y Desarrollo Metropolitano</p>
+                </div>
+                <div class="footer-col">
+                    <h4>LCAZU</h4>
+                    <div class="wordmark">LCAZU</div>
+                    <p>Licenciatura en Ciencias Ambientales para Zonas Urbanas</p>
                 </div>
             </div>
             <div class="footer-bottom">
