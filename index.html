@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="lab/city-lab.css?v=1793202627">
+    <link rel="stylesheet" href="lab/city-lab.css?v=1793202811">
     <style>
         :root {
             --primary: #690E31;
@@ -218,6 +218,13 @@
             color: var(--white);
             box-shadow: 0 10px 30px rgba(105, 14, 49, 0.4);
         }
+
+        button.btn { border: none; font-family: inherit; }
+        #laboratorio[hidden] { display: none !important; }
+        .lab-close { display: block; margin: 0 0 1.2rem auto; background: rgba(255,255,255,0.08); color: var(--text-light); border: 1px solid rgba(255,255,255,0.2); border-radius: 99px; padding: 0.5rem 1.1rem; font: inherit; font-size: 0.85rem; cursor: pointer; }
+        .lab-close:hover { background: rgba(255,255,255,0.16); }
+        #laboratorio.lab-in { animation: labin .5s ease; }
+        @keyframes labin { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 
         .btn-primary:hover {
             background: var(--primary-light);
@@ -564,13 +571,14 @@
                 <p style="font-size: 0.9rem; color: var(--text-muted); border: 1px dashed var(--secondary); padding: 2rem; border-radius: 20px; margin-bottom: 1.2rem;">
                     Mueve el mouse para navegar el territorio digital 3D en el fondo, o entra al laboratorio y juega con la ciudad.
                 </p>
-                <a href="#laboratorio" class="btn btn-primary">Abrir el Laboratorio Urbano</a>
+                <button type="button" id="lab-toggle" class="btn btn-primary" aria-expanded="false" aria-controls="laboratorio">Abrir el Laboratorio Urbano</button>
             </div>
         </div>
     </section>
 
-    <section class="section" id="laboratorio">
+    <section class="section" id="laboratorio" hidden>
         <div class="container">
+            <button type="button" class="lab-close" id="lab-close" aria-label="Cerrar el laboratorio">✕ Cerrar laboratorio</button>
             <div class="lab-intro reveal">
                 <span class="eyebrow">Laboratorio Urbano</span>
                 <h2>Juega con la ciudad</h2>
@@ -1181,6 +1189,31 @@
         init3D();
         animate();
     </script>
-    <script src="lab/city-lab.js?v=1793202627"></script>
+    <script>
+        // Abrir / cerrar el Laboratorio Urbano
+        (function () {
+            const lab = document.getElementById('laboratorio'), btn = document.getElementById('lab-toggle'), close = document.getElementById('lab-close');
+            if (!lab || !btn) return;
+            function setLab(open, scroll) {
+                lab.hidden = !open;
+                btn.setAttribute('aria-expanded', open);
+                btn.textContent = open ? 'Cerrar el Laboratorio Urbano' : 'Abrir el Laboratorio Urbano';
+                if (open) {
+                    lab.classList.remove('lab-in'); void lab.offsetWidth; lab.classList.add('lab-in');
+                    window.dispatchEvent(new Event('resize'));
+                    if (scroll !== false) setTimeout(() => lab.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+                } else {
+                    window.__labActive = false;
+                    if (scroll !== false) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            btn.addEventListener('click', () => setLab(lab.hidden));
+            close.addEventListener('click', () => setLab(false));
+            // los enlaces #laboratorio (menú) también lo abren
+            document.querySelectorAll('a[href="#laboratorio"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); setLab(true); }));
+            if (location.hash === '#laboratorio') setLab(true, false);
+        })();
+    </script>
+    <script src="lab/city-lab.js?v=1793202811"></script>
 </body>
 </html>
