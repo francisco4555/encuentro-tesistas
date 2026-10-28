@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="lab/city-lab.css?v=1793207189">
+    <link rel="stylesheet" href="lab/city-lab.css?v=1793207449">
     <style>
         :root {
             --primary: #690E31;
@@ -180,6 +180,9 @@
             margin-bottom: 2rem;
             text-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+
+        .hero-place { max-width: 640px; margin: 0 auto 2rem; font-size: 0.95rem; color: var(--text-light); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 0.8rem 1.1rem; line-height: 1.5; }
+        .hero-place b { color: var(--secondary); }
 
         .hero h1.h1-long { font-size: clamp(2.1rem, 5vw, 4rem); line-height: 1.15; }
 
@@ -553,6 +556,7 @@
             <h1 class="h1-long">2do Encuentro de Presentación de <span>Avances de Trabajo Terminal</span></h1>
             <p class="eyebrow" style="margin-bottom:1.2rem">LUDM · LCAZU</p>
             <p class="lead">Intercambio académico entre tesistas de Urbanismo y Ciencias Ambientales para abordar los retos urbanos y ambientales de la ciudad.</p>
+            <p class="hero-place"><span>📍</span> <b>Lugar:</b> Auditorio de la Unidad Académica GAM, UNRC – Avenida 506 s/n, Colonia San Juan de Aragón II Sección, Alcaldía Gustavo A. Madero, C.P. 07969, Ciudad de México.</p>
             <div class="btn-group">
                 <a href="#programa" class="btn btn-primary">Explorar Agenda</a>
                 <a href="#sobre" class="btn btn-outline">Conocer más</a>
@@ -566,6 +570,7 @@
                 <span class="eyebrow">Interdisciplina</span>
                 <h2>Donde el ambiente se encuentra con la ciudad</h2>
                 <p><b>2do Encuentro de Presentación de Avances de Trabajo Terminal: LUDM-LCAZU</b> es un puente académico para la vinculación entre la Licenciatura en Ciencias Ambientales para Zonas Urbanas (LCAZU) y la Licenciatura en Urbanismo y Desarrollo Metropolitano (LUDM).</p>
+                <p style="margin-top:1rem"><b>Lugar:</b> Auditorio de la Unidad Académica GAM, UNRC – Avenida 506 s/n, Colonia San Juan de Aragón II Sección, Alcaldía Gustavo A. Madero, C.P. 07969, Ciudad de México.</p>
                 <p style="margin-top:1rem"><b>Objetivo:</b> Fomentar el intercambio académico entre tesistas de Urbanismo y Ciencias Ambientales mediante la presentación y discusión de avances de investigación y otras formas de titulación, promoviendo el diálogo interdisciplinario, la retroalimentación crítica y la generación de propuestas para abordar los retos urbanos y ambientales desde una perspectiva integral y sostenible.</p>
                 <div class="highlight-box">
                     "Buscamos transformar la investigación académica en herramientas reales de regeneración territorial."
@@ -878,7 +883,7 @@
                     <h4>UNRC</h4>
                     <img src="assets/logos/logo-unrc.svg" alt="UNRC" class="brand-logo" style="margin-bottom: 15px;">
                     <p>Universidad Nacional Rosario Castellanos</p>
-                    <p>Ciudad de México</p>
+                    <p>Unidad Académica GAM · Avenida 506 s/n, Col. San Juan de Aragón II Sección, Alcaldía Gustavo A. Madero, C.P. 07969, Ciudad de México</p>
                 </div>
                 <div class="footer-col">
                     <h4>Línea de investigación</h4>
@@ -1215,6 +1220,6 @@
             if (location.hash === '#laboratorio') setLab(true, false);
         })();
     </script>
-    <script src="lab/city-lab.js?v=1793207189"></script>
+    <script src="lab/city-lab.js?v=1793207449"></script>
 </body>
 </html>
