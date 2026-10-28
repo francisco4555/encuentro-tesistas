@@ -577,12 +577,29 @@
                 <p>Un modelo basado en agentes, al estilo NetLogo: ajusta los parámetros, provoca eventos y construye infraestructura verde para ver cómo responden el agua, el fuego, la basura y la salud de la población. Elige una misión, construye infraestructura y lleva la ciudad a un índice de sostenibilidad alto, aun bajo tormentas, olas de calor e incendios.</p>
             </div>
             <div id="city-lab"></div>
-            <div class="lab-notes">
-                <div><h5>🌿 Ciudad esponja</h5>Pavimento permeable, jardines de lluvia y humedales infiltran el agua donde cae: menos escurrimiento, menos inundación y agua más limpia.</div>
-                <div><h5>🔥 Incendios</h5>El calor, la sequía, el viento y la basura acumulada alimentan el fuego. Bomberos, humedad y áreas verdes bien ubicadas lo frenan.</div>
-                <div><h5>🗑️ Basura y agua</h5>La basura tapa el drenaje y, al lavarse con la lluvia, contamina el río. Recolección y reciclaje cortan el problema de raíz.</div>
-                <div><h5>🌡️ Isla de calor</h5>El concreto retiene calor; el arbolado y el agua lo reducen. Cambia a la «Vista Calor» para ver las diferencias.</div>
-            </div>
+            <details class="lab-docs">
+                <summary><span>📖 Notas del modelo: cómo funciona</span><small>Toca para mostrar u ocultar</small></summary>
+                <div class="lab-docs-grid">
+                    <section><h5>🧩 Qué es este modelo</h5>
+                        <p>Es un <b>modelo basado en agentes</b>, al estilo de NetLogo: una rejilla de celdas (la ciudad) y agentes (los habitantes) que siguen reglas simples. De la interacción de esas reglas surge un comportamiento complejo, como inundaciones, incendios o contaminación. Cada paso de la simulación equivale a <b>1 hora</b>.</p></section>
+                    <section><h5>🌿 Agua y ciudad esponja</h5>
+                        <p>La lluvia cae en todas las celdas y escurre cuesta abajo hacia el río. Calles y edificios <b>no infiltran</b>; parques, jardines de lluvia, humedales y pavimento permeable <b>sí</b>. El drenaje saca agua de las calles, pero la basura lo tapa. Si el agua se acumula, hay inundación y daña a la gente. Una «ciudad esponja» absorbe el agua donde cae.</p></section>
+                    <section><h5>🗑️ Basura y agua contaminada</h5>
+                        <p>Los edificios generan basura que se derrama a la calle. La recolección y el reciclaje la reducen. Cuando llueve, el agua <b>lava la basura</b> y la convierte en contaminación. Las industrias descargan al río, y la corriente lleva la contaminación hacia el este. Humedales, jardines de lluvia y plantas de tratamiento la limpian.</p></section>
+                    <section><h5>🔥 Incendios</h5>
+                        <p>Pueden iniciar por calor y sequía. El fuego se propaga a celdas vecinas según el <b>combustible</b> (vegetación, industria, basura), la humedad y el viento, que lo empuja en su dirección. El agua lo apaga y las estaciones de bomberos lo combaten en un radio de 8 celdas. Lo quemado queda en ruinas.</p></section>
+                    <section><h5>🌡️ Isla de calor</h5>
+                        <p>Cada tipo de superficie suma o resta grados: el concreto, las calles y la industria calientan; árboles, humedales y agua enfrían. Una ola de calor sube la temperatura de toda la ciudad. Cambia a la vista <b>🌡️ Calor</b> para ver dónde se concentra.</p></section>
+                    <section><h5>❤️ Ciudadanos y salud</h5>
+                        <p>Los puntos del mapa son personas que caminan al azar. Pierden salud por fuego, inundación, agua contaminada, calor extremo y basura acumulada. Se recuperan poco a poco, más rápido en parques. Verde es sano; rojo, enfermo.</p></section>
+                    <section><h5>🏙️ Índice de sostenibilidad</h5>
+                        <p>Combina salud (30%), calidad del agua (25%), ausencia de inundación (20%), confort térmico (15%) y ausencia de incendios (10%). Es la calificación global de tu ciudad: más de 70 es una meta razonable.</p></section>
+                    <section><h5>💡 Cómo mejorar una ciudad</h5>
+                        <p>Combina estrategias: infraestructura verde para el agua y el calor, bomberos y humedad para el fuego, y políticas de residuos para el drenaje y el río. Observa las gráficas para detectar qué indicador cae primero.</p></section>
+                    <section><h5>⚠️ Limitaciones</h5>
+                        <p>Es un modelo simplificado con fines <b>didácticos</b>. Los valores son ilustrativos: no predice una ciudad real y no sustituye estudios técnicos. Su utilidad está en comprender relaciones entre agua, calor, fuego, residuos y salud urbana.</p></section>
+                </div>
+            </details>
         </div>
     </section>
 
