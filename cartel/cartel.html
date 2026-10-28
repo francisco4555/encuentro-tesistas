@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Cartel · 2do Encuentro de Presentación de Avances de Trabajo Terminal: LUDM-LCAZU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Cartel A3 vertical (297 × 420 mm) — se diseña a 1123 × 1587 px */
+    @page { size: 297mm 420mm; margin: 0; }
+    :root { --guinda: #690E31; --guinda-claro: #a52360; --oro: #B58A32; --verde: #4F8F68; --bg: #0a0a0a; --txt: #fdfbf7; --mut: #b9b4ac; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #000; }
+    body { font-family: 'Inter', sans-serif; color: var(--txt); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .poster { position: relative; width: 1123px; height: 1587px; overflow: hidden; margin: 0 auto; background:
+        radial-gradient(1200px 700px at 85% -5%, rgba(105,14,49,0.55), transparent 60%),
+        radial-gradient(900px 600px at 0% 45%, rgba(79,143,104,0.18), transparent 60%),
+        var(--bg); }
+    .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(#000 0%, transparent 70%); -webkit-mask-image: linear-gradient(#000 0%, transparent 70%); }
+    .city { position: absolute; left: 0; right: 0; bottom: 0; height: 640px; }
+    .city img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: bottom; }
+    .city::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, var(--bg) 0%, rgba(10,10,10,0) 55%); }
+    .content { position: absolute; inset: 0; padding: 64px 76px 56px; display: flex; flex-direction: column; }
+
+    .logos { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .logos .unrc { height: 100px; }
+    .logos .right { display: flex; align-items: center; gap: 26px; }
+    .logos .right img { height: 112px; width: auto; }
+    .lcazu-mark { font-family: 'Fraunces', serif; font-weight: 700; font-size: 38px; letter-spacing: .05em; color: var(--verde); padding-left: 26px; border-left: 1px solid rgba(255,255,255,0.25); line-height: 1; }
+    .lcazu-mark small { display: block; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 10px; letter-spacing: .12em; color: var(--mut); margin-top: 6px; text-transform: uppercase; }
+
+    .kicker { margin-top: 52px; font-size: 17px; font-weight: 600; letter-spacing: .34em; text-transform: uppercase; color: var(--oro); }
+    h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 88px; line-height: 1.04; letter-spacing: -.01em; margin-top: 22px; }
+    h1 em { font-style: italic; color: var(--oro); }
+    .tag { display: inline-block; margin-top: 26px; font-size: 24px; font-weight: 700; letter-spacing: .26em; color: #fff; background: var(--guinda); border-radius: 99px; padding: 12px 30px; box-shadow: 0 12px 34px rgba(105,14,49,.55); align-self: flex-start; }
+    .obj { margin-top: 28px; max-width: 800px; font-size: 20.5px; line-height: 1.5; color: #d9d4cc; }
+    .obj b { color: #fff; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; max-width: 800px; }
+    .chips span { font-size: 15px; font-weight: 500; padding: 8px 16px; border-radius: 99px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.16); color: #ece7df; }
+
+    .bottom { margin-top: auto; padding-top: 24px; display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: end; }
+    .info { display: flex; flex-direction: column; gap: 14px; }
+    .box { background: rgba(10,10,10,0.88); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 18px 22px; backdrop-filter: blur(2px); }
+    .box small { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .22em; color: var(--oro); text-transform: uppercase; margin-bottom: 7px; }
+    .box p { font-size: 19px; line-height: 1.45; color: #f1ede6; }
+    .box p span { color: var(--mut); }
+    .qr { background: #fff; border-radius: 26px; padding: 34px 34px 24px; text-align: center; color: #1c0a14; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+    .qr img { width: 100%; display: block; }
+    .qr .t { margin-top: 14px; font-family: 'Fraunces', serif; font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--guinda); }
+    .qr .u { margin-top: 6px; font-size: 12.5px; font-weight: 600; color: #4a3f45; word-break: break-all; }
+    .foot { margin-top: 20px; display: flex; justify-content: space-between; gap: 20px; font-size: 14px; color: #d8d3cb; background: rgba(10,10,10,0.9); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 14px 20px; }
+    .foot b { color: #fff; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="poster">
+    <div class="grid"></div>
+    <div class="city"><img src="fondo-ciudad.svg" alt=""></div>
+
+    <div class="content">
+        <div class="logos">
+            <img class="unrc" src="../assets/logos/logo-unrc.svg" alt="Universidad Nacional Rosario Castellanos">
+            <div class="right">
+                <img src="../assets/logos/logo-lcazu.png" alt="Línea de investigación: Conflictos socioterritoriales-ambientales y políticas de planificación urbana">
+                <img src="../assets/logos/logo-ludm.svg" alt="LUDM">
+                <div class="lcazu-mark">LCAZU<small>Ciencias Ambientales</small></div>
+            </div>
+        </div>
+
+        <div class="kicker">Universidad Nacional Rosario Castellanos</div>
+        <h1>2do Encuentro de Presentación de <em>Avances de Trabajo Terminal</em></h1>
+        <div class="tag">LUDM · LCAZU</div>
+
+        <p class="obj"><b>Fomentar el intercambio académico</b> entre tesistas de Urbanismo y Ciencias Ambientales mediante la presentación y discusión de avances de investigación y otras formas de titulación, promoviendo el diálogo interdisciplinario, la retroalimentación crítica y la generación de propuestas para abordar los retos urbanos y ambientales desde una perspectiva integral y sostenible.</p>
+
+        <div class="chips">
+            <span>Ambiente y territorio</span><span>Cartografía y SIG</span><span>Ordenamiento urbano</span><span>Gestión socioambiental</span><span>Cambio climático</span>
+        </div>
+
+        <div class="bottom">
+            <div class="info">
+                <div class="box"><small>📍 Lugar</small><p>Auditorio de la Unidad Académica GAM, UNRC<br><span>Avenida 506 s/n, Col. San Juan de Aragón II Sección, Alcaldía Gustavo A. Madero, C.P. 07969, Ciudad de México</span></p></div>
+                <div class="box"><small>🗓️ Fecha y horario</small><p id="fecha">Por confirmar</p></div>
+            </div>
+            <div class="qr">
+                <img src="qr-encuentro-tesistas.svg" alt="Código QR a la página del encuentro">
+                <div class="t">Escanea y consulta el programa</div>
+                <div class="u">francisco4555.github.io/encuentro-tesistas</div>
+            </div>
+        </div>
+
+        <div class="foot">
+            <span><b>LUDM</b> · Licenciatura en Urbanismo y Desarrollo Metropolitano</span>
+            <span><b>LCAZU</b> · Licenciatura en Ciencias Ambientales para Zonas Urbanas</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
