@@ -24,12 +24,13 @@
             --primary-light: #8a1a4a;
             --secondary: #B58A32;
             --accent-green: #4F8F68;
-            --bg-dark: #0a0a0a; /* Cambiamos a fondo oscuro para que el 3D resalte */
+            --bg-dark: #0a0a0a;
             --text-light: #fdfbf7;
             --text-muted: #aaa;
             --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.05);
-            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            --glass: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -60,7 +61,7 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            z-index: 0;
+            z-index: -2;
             pointer-events: none; /* Deja que los clicks pasen al contenido */
         }
 
@@ -101,9 +102,14 @@
         }
 
         .logo img {
-            height: 40px;
+            height: 45px;
             width: auto;
-            filter: brightness(0) invert(1); /* Logo blanco para fondo oscuro */
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+        }
+
+        #ripple-canvas {
+            display: none;
         }
 
         .nav-links {
@@ -257,6 +263,11 @@
             font-style: italic;
             font-size: 1.3rem;
             backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+        .highlight-box:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(10px);
         }
 
         /* --- Ejes Grid --- */
@@ -303,8 +314,14 @@
             background: var(--glass);
             border-radius: 40px;
             padding: 4rem;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
             backdrop-filter: blur(20px);
+            transition: var(--transition);
+        }
+        .programa-wrap:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.01);
+            border-color: var(--secondary);
         }
 
         .program-tabs {
@@ -432,13 +449,13 @@
         /* Animations */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(60px) scale(0.98);
+            transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .reveal.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         @media (max-width: 992px) {
@@ -455,7 +472,7 @@
     <header id="main-header">
         <div class="nav-wrap">
             <a href="#" class="logo">
-                <img src="https://francisco4555.github.io/encuentro-tesistas/assets/logo-unrc.jpg" alt="UNRC">
+                <img src="assets/logos/logo-unrc-new.jpg" alt="UNRC">
                 <span>Encuentro de Tesistas</span>
             </a>
             <nav class="nav-links">
@@ -541,43 +558,223 @@
                 <h2>Programa del Encuentro</h2>
             </div>
             <div class="programa-wrap reveal">
-                <div class="program-tabs">
-                    <button class="tab active" onclick="switchDay(1)">Día 1</button>
-                    <button class="tab" onclick="switchDay(2)">Día 2</button>
+                    <div class="program-tabs">
+                    <button class="tab active" onclick="switchDay(1)">Lunes 23</button>
+                    <button class="tab" onclick="switchDay(2)">Martes 24</button>
+                    <button class="tab" onclick="switchDay(3)">Miércoles 25</button>
                 </div>
                 <div id="day1" class="timeline">
                     <div class="timeline-item">
-                        <div class="timeline-time">09:00 AM</div>
+                        <div class="timeline-time">10:00 AM</div>
                         <div class="timeline-content">
-                            <h4>Inauguración Académica</h4>
-                            <p>Apertura oficial y presentación de objetivos.</p>
+                            <h4>Inauguración del Evento</h4>
+                            <p>Apertura oficial y presentación de objetivos. (05 min)</p>
                         </div>
                     </div>
                     <div class="timeline-item">
-                        <div class="timeline-time">11:00 AM</div>
+                        <div class="timeline-time">10:05 AM</div>
                         <div class="timeline-content">
-                            <h4>Mesas de Diálogo Territorial</h4>
-                            <p>Intercambio de avances entre LCAZU y LUDM.</p>
+                            <h4>Fernanda Nallely Victorica Orduña (LUDM)</h4>
+                            <p>Comercio informal y espacio público. Implicaciones en la Plaza Zarco, Alcaldía Cuauhtémoc, Ciudad de México, 2020-2025.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">10:40 AM</div>
+                        <div class="timeline-content">
+                            <h4>Karina Ramírez Ayala (LCAZU)</h4>
+                            <p>Inundaciones y su relación con el riesgo y la vulnerabilidad en el Condominio Nacional 55 (2019–2025).</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">11:15 AM</div>
+                        <div class="timeline-content">
+                            <h4>Martín Pérez Rosales (LUDM)</h4>
+                            <p>Participación Ciudadana y gestión de proyectos: Estudio del Presupuesto Participativo como herramienta de transformación urbana en la colonia Tepalcates ll, Iztapalapa, CDMX.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">11:50 AM</div>
+                        <div class="timeline-content">
+                            <h4>Alejandra Imperia Junco (LCAZU)</h4>
+                            <p>El greenwashing en plataformas digitales y su impacto en los hábitos de consumo de jóvenes de la UNRC, sede Gustavo A. Madero. Análisis desde una perspectiva crítica.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">12:25 PM</div>
+                        <div class="timeline-content" style="border-left-color: var(--secondary);">
+                            <h4>RECESO</h4>
+                            <p>Descanso y networking.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">12:40 PM</div>
+                        <div class="timeline-content">
+                            <h4>María José Pérez Cruz (LUDM)</h4>
+                            <p>Cuerpo, miedo y apropiación: mujeres y espacio público en San Miguel Teotongo, Iztapalapa.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">13:15 PM</div>
+                        <div class="timeline-content">
+                            <h4>Guadalupe Hilario Amezquita (LCAZU)</h4>
+                            <p>Almacenamiento de carbono en la biomasa área forestal de la Sierra de Guadalupe en la alcaldía Gustavo A. Madero.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">13:50 PM</div>
+                        <div class="timeline-content">
+                            <h4>Litzia Olvera Zambrano (LUDM)</h4>
+                            <p>Segregación socioespacial y violencia asociada al narcotráfico en la colonia Morelos, barrio de Tepito alcaldía Cuahutemoc, CDMX.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">14:25 PM</div>
+                        <div class="timeline-content" style="background: rgba(105, 14, 49, 0.1);">
+                            <h4>Plenaria de Estudiantes</h4>
+                            <p>Espacio de diálogo y síntesis de los avances presentados.</p>
                         </div>
                     </div>
                 </div>
                 <div id="day2" class="timeline" style="display: none;">
                     <div class="timeline-item">
-                        <div class="timeline-time">09:00 AM</div>
+                        <div class="timeline-time">10:00 AM</div>
                         <div class="timeline-content">
-                            <h4>Talleres de Co-creación SIG</h4>
-                            <p>Mapeo colaborativo y análisis espacial.</p>
+                            <h4>Abraham Cázares Hernández (LCAZU)</h4>
+                            <p>Distribución espacial de la isla de calor urbana superficial en la alcaldía Iztapalapa, Ciudad de México.</p>
                         </div>
                     </div>
                     <div class="timeline-item">
-                        <div class="timeline-time">01:00 PM</div>
+                        <div class="timeline-time">10:35 AM</div>
                         <div class="timeline-content">
-                            <h4>Clausura y Síntesis</h4>
-                            <p>Presentación de conclusiones y próximos pasos.</p>
+                            <h4>Juan Pablo Calvillo (LUDM)</h4>
+                            <p>Invasión del espacio público por el tianguis informal en la colonia Juan Escutia, Iztapalapa, Ciudad de México.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">11:10 AM</div>
+                        <div class="timeline-content">
+                            <h4>Aldo Esteban Mejía Sandoval (LCAZU)</h4>
+                            <p>Impacto del desarrollo inmobiliario en el patrimonio biocultural del entorno Fuentes Brotantes 134, Tlalpan, CDMX, 2020–2026.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">11:45 AM</div>
+                        <div class="timeline-content">
+                            <h4>Héctor Juan Arguello Pedraza (LUDM)</h4>
+                            <p>Gentrificación en la Colonia Roma, alcaldía Cuahutemoc, CDMX.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">12:20 PM</div>
+                        <div class="timeline-content">
+                            <h4>María del Rosario Rodríguez Barrera (LCAZU)</h4>
+                            <p>Identificación de las actividades de apoyo desarrolladas en la SEMARNAT para el seguimiento del Plan de Acción en Protección a la Vaquita Marina (Phocoena sinus).</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">12:55 PM</div>
+                        <div class="timeline-content" style="border-left-color: var(--secondary);">
+                            <h4>RECESO</h4>
+                            <p>Descanso y networking.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">13:10 PM</div>
+                        <div class="timeline-content">
+                            <h4>Salvador Galván Pérez (LUDM)</h4>
+                            <p>La percepción de los visitantes de Bosques de Aragón con respecto al deterioro ambiental y la zona construida dentro del bosque, Ciudad de México.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">13:45 PM</div>
+                        <div class="timeline-content">
+                            <h4>Estudiante de LCAZU</h4>
+                            <p>Presentación de avance de trabajo terminal.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">14:20 PM</div>
+                        <div class="timeline-content" style="background: rgba(105, 14, 49, 0.1);">
+                            <h4>Plenaria de Estudiantes</h4>
+                            <p>Espacio de diálogo y síntesis de los avances presentados.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="day3" class="timeline" style="display: none;">
+                    <div class="timeline-item">
+                        <div class="timeline-time">10:00 AM</div>
+                        <div class="timeline-content">
+                            <h4>Alberto Mendoza Vázquez (LUDM)</h4>
+                            <p>La Certificación LEED (Liderazgo en Diseño Energético y Ambiental) y su relación con el Impacto Ambiental en Edificios de Gran Altura en la CDMX: caso de estudio Torre Reforma.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">10:35 AM</div>
+                        <div class="timeline-content">
+                            <h4>Guadalupe Pérez Téllez (LCAZU)</h4>
+                            <p>Riqueza y distribución de briofitas a lo largo de un gradiente altitudinal en la microcuenca del río Magdalena, Ciudad de México.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">11:10 AM</div>
+                        <div class="timeline-content">
+                            <h4>Daniela Aimeé Cortés Juárez (LUDM)</h4>
+                            <p>La gentrificación habitacional en la colonia San Rafael, Alcaldía Cuauhtémoc, CDMX: Análisis del incremento del costo del suelo y el desplazamiento de residentes originarios (2018 – 2026).</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">11:45 AM</div>
+                        <div class="timeline-content">
+                            <h4>Jocelyn Sepúlveda Cobaxin (LCAZU)</h4>
+                            <p>Relación entre la intensidad del tráfico de trajineras y la calidad del agua en el lago Huetzalin del Parque Ecológico de Xochimilco.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">12:20 PM</div>
+                        <div class="timeline-content">
+                            <h4>Brenda Georgina Aguiñaga Ramírez (LUDM)</h4>
+                            <p>Comercio ambulante y espacio público, implicaciones en las condiciones físicas de habitabilidad en la calle Aztecas, Colonia Morelos, Alcaldía Cuauhtémoc, Ciudad de México.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">12:55 PM</div>
+                        <div class="timeline-content" style="border-left-color: var(--secondary);">
+                            <h4>RECESO</h4>
+                            <p>Descanso y networking.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">13:10 PM</div>
+                        <div class="timeline-content">
+                            <h4>Julián Adán Cardona Díaz (LCAZU)</h4>
+                            <p>Impacto por la disposición de residuos sólidos y de construcción en la barranca Tecamachalco (2025).</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">13:45 PM</div>
+                        <div class="timeline-content">
+                            <h4>Sarai Lizu Jiménez Fernández (LUDM)</h4>
+                            <p>Demostrar la correlación entre equipamiento urbano y los nuevos desarrollos inmobiliarios a través del Modelo De La Ciudad de los 15 Minutos. Caso de Estudio: Zona de Tlatelolco.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">14:20 PM</div>
+                        <div class="timeline-content" style="background: rgba(105, 14, 49, 0.1);">
+                            <h4>Plenaria de Estudiantes</h4>
+                            <p>Espacio de diálogo y síntesis de los avances presentados.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">14:55 PM</div>
+                        <div class="timeline-content">
+                            <h4>Clausura</h4>
+                            <p>Cierre oficial del encuentro.</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
         </div>
     </section>
 
@@ -605,11 +802,16 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <h4>UNRC</h4>
+                    <img src="assets/logos/logo-unrc-new.jpg" alt="UNRC" style="height: 40px; width: auto; margin-bottom: 15px; object-fit: contain;">
                     <p>Universidad Nacional Rosario Castellanos</p>
                     <p>Ciudad de México</p>
                 </div>
                 <div class="footer-col">
                     <h4>LCAZU + LUDM</h4>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <img src="assets/logos/logo-lcazu.jpg" alt="LCAZU" style="height: 40px; width: auto; object-fit: contain;">
+                        <img src="assets/logos/logo-ludm.jpg" alt="LUDM" style="height: 40px; width: auto; object-fit: contain;">
+                    </div>
                     <p>Ciencias Ambientales para Zonas Urbanas</p>
                     <p>Urbanismo y Desarrollo Metropolitano</p>
                 </div>
@@ -628,6 +830,16 @@
         let scene, camera, renderer, cityGroup, particles;
         let mouseX = 0, mouseY = 0;
 
+        // Ripple Variables
+        let rippleScene, rippleCamera, rippleRenderer;
+        let rippleMesh, rippleMaterial;
+        let rippleUniforms = {
+            u_time: { value: 0 },
+            u_mouse: { value: new THREE.Vector2(0, 0) },
+            u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+            u_intensity: { value: 0.02 } // Efecto ligero
+        };
+
         function init3D() {
             scene = new THREE.Scene();
             scene.fog = new THREE.FogExp2(0x0a0a0a, 0.02);
@@ -642,9 +854,15 @@
             renderer.toneMapping = THREE.ReinhardToneMapping;
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
+            initRipple(); // Inicializar efecto de agua
+
             // Lighting
             const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
             scene.add(hemiLight);
+            // ... resto del código
+
+            // ... resto del código
+
 
             const pointLight = new THREE.PointLight(0xB58A32, 20, 100);
             pointLight.position.set(10, 10, 10);
@@ -739,6 +957,13 @@
                 );
                 const scale = Math.max(1, 1.5 - dist * 0.1);
                 cube.scale.set(1, scale, 1);
+
+                // Emissive pulse effect
+                if (cube.material.emissive) {
+                    const pulse = Math.sin(time * 2 + i) * 0.2 + 0.3;
+                    cube.material.emissiveIntensity = pulse;
+                }
+
                 // Subtle breathing effect
                 cube.position.y = (cube.geometry.parameters.height / 2) + Math.sin(time + i) * 0.1;
             });
@@ -751,6 +976,62 @@
             cityGroup.position.y = Math.sin(time) * 0.5;
 
             renderer.render(scene, camera);
+
+            // Update Ripple
+            if (rippleRenderer) {
+                rippleUniforms.u_time.value = time;
+                rippleUniforms.u_mouse.value.set(
+                    (mouseX / window.innerWidth) + 0.5,
+                    (mouseY / window.innerHeight) + 0.5
+                );
+                rippleRenderer.render(rippleScene, rippleCamera);
+            }
+        }
+
+        function initRipple() {
+            rippleScene = new THREE.Scene();
+            rippleCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+            rippleRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            rippleRenderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('ripple-canvas').appendChild(rippleRenderer.domElement);
+
+            const geometry = new THREE.PlaneGeometry(2, 2);
+            rippleMaterial = new THREE.ShaderMaterial({
+                uniforms: rippleUniforms,
+                transparent: true,
+                vertexShader: `
+                    varying vec2 vUv;
+                    void main() {
+                        vUv = uv;
+                        gl_Position = vec4(position, 0.0, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+                    uniform vec2 u_resolution;
+                    uniform float u_intensity;
+                    varying vec2 vUv;
+
+                    void main() {
+                        vec2 uv = vUv;
+                        float dist = distance(uv, u_mouse);
+
+                        // Onda más pronunciada y visible
+                        float ripple = sin(dist * 15.0 - u_time * 3.0) * 0.05 * exp(-dist * 2.0);
+
+                        // Difuminado más amplio y suave
+                        float blur = smoothstep(0.5, 0.0, dist) * 0.15;
+
+                        // Color más vibrante y brillante
+                        vec3 color = vec3(0.8, 0.9, 1.0) * ripple * 5.0;
+                        gl_FragColor = vec4(color, blur);
+                    }
+                `
+            });
+
+            const mesh = new THREE.Mesh(geometry, rippleMaterial);
+            rippleScene.add(mesh);
         }
 
         // --- UI INTERACTIONS ---
@@ -771,20 +1052,25 @@
 
             // Cinematic Zoom & Tilt
             const scrollPerc = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            camera.position.z = 20 - (scrollPerc * 15);
-            camera.position.y = 20 - (scrollPerc * 10);
-            camera.rotation.x = -0.5 + (scrollPerc * 0.2);
+            camera.position.z = 20 - (scrollPerc * 25); // Increased zoom
+            camera.position.y = 20 - (scrollPerc * 15);
+            camera.rotation.x = -0.5 + (scrollPerc * 0.4);
             camera.lookAt(0, 0, 0);
+
+            // City rotation based on scroll
+            cityGroup.rotation.y += scrollPerc * 0.01;
         });
 
         function switchDay(day) {
             const tabs = document.querySelectorAll('.tab');
             const d1 = document.getElementById('day1');
             const d2 = document.getElementById('day2');
+            const d3 = document.getElementById('day3');
             tabs.forEach(t => t.classList.remove('active'));
             event.currentTarget.classList.add('active');
             d1.style.display = day === 1 ? 'block' : 'none';
             d2.style.display = day === 2 ? 'block' : 'none';
+            d3.style.display = day === 3 ? 'block' : 'none';
         }
 
         // Reveal animations
