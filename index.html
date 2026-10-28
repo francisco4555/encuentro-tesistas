@@ -830,7 +830,7 @@
     </footer>
 
     <!-- Three.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="vendor/three.min.js"></script>
 
     <script>
         // --- 3D BACKGROUND ENGINE ---
@@ -1010,7 +1010,7 @@
                     varying vec2 vUv;
                     void main() {
                         vUv = uv;
-                        gl_Position = vec4(position, 0.0, 1.0);
+                        gl_Position = vec4(position.xy, 0.0, 1.0);
                     }
                 `,
                 fragmentShader: `
