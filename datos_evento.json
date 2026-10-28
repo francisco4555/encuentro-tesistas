@@ -3,48 +3,122 @@
   "generado": "2026-10-21",
   "estado": "borrador-academico",
   "evento": {
-    "nombre": "Encuentro de Tesistas",
+    "nombre": "2do Encuentro de Presentación de Avances de Trabajo Terminal: LUDM-LCAZU",
     "institucion": "Universidad Nacional Rosario Castellanos",
     "licenciaturas": [
       "Licenciatura en Ciencias Ambientales para Zonas Urbanas",
       "Licenciatura en Urbanismo y Desarrollo Metropolitano"
     ],
-    "siglas": ["LCAZU", "LUDM"],
+    "siglas": [
+      "LCAZU",
+      "LUDM"
+    ],
     "fecha": null,
     "horario": null,
-    "sede": null,
+    "sede": "Auditorio de la Unidad Académica GAM, UNRC – Avenida 506 s/n, Colonia San Juan de Aragón II Sección, Alcaldía Gustavo A. Madero, C.P. 07969, Ciudad de México.",
     "modalidad": null,
-    "nota": "Fecha, horario, sede y modalidad por confirmar."
+    "nota": "Fecha, horario y modalidad por confirmar.",
+    "objetivo": "Fomentar el intercambio académico entre tesistas de Urbanismo y Ciencias Ambientales mediante la presentación y discusión de avances de investigación y otras formas de titulación, promoviendo el diálogo interdisciplinario, la retroalimentación crítica y la generación de propuestas para abordar los retos urbanos y ambientales desde una perspectiva integral y sostenible."
   },
   "ejes_tematicos": [
-    { "nombre": "Ambiente y territorio", "descripcion": "Servicios ambientales, ecosistemas urbanos y resiliencia territorial." },
-    { "nombre": "Cartografía y SIG", "descripcion": "Análisis espacial, geotecnologías y representación territorial." },
-    { "nombre": "Ordenamiento urbano", "descripcion": "Planeación, diseño urbano y usos del suelo." },
-    { "nombre": "Gestión socioambiental", "descripcion": "Gobernanza, participación social y políticas públicas." },
-    { "nombre": "Cambio climático", "descripcion": "Adaptación, mitigación y riesgos en las ciudades." }
+    {
+      "nombre": "Ambiente y territorio",
+      "descripcion": "Servicios ambientales, ecosistemas urbanos y resiliencia territorial."
+    },
+    {
+      "nombre": "Cartografía y SIG",
+      "descripcion": "Análisis espacial, geotecnologías y representación territorial."
+    },
+    {
+      "nombre": "Ordenamiento urbano",
+      "descripcion": "Planeación, diseño urbano y usos del suelo."
+    },
+    {
+      "nombre": "Gestión socioambiental",
+      "descripcion": "Gobernanza, participación social y políticas públicas."
+    },
+    {
+      "nombre": "Cambio climático",
+      "descripcion": "Adaptación, mitigación y riesgos en las ciudades."
+    }
   ],
   "programa": [
     {
       "dia": 1,
       "etiqueta": "Día 1",
       "sesiones": [
-        { "hora": "09:00 – 09:30", "titulo": "Registro y bienvenida", "eje": "General", "descripcion": "Recepción de participantes y palabras de apertura a cargo del comité organizador." },
-        { "hora": "09:30 – 10:30", "titulo": "Conferencia inaugural", "eje": "General", "descripcion": "Perspectiva sobre la investigación interdisciplinaria entre ambiente y ciudad." },
-        { "hora": "10:45 – 12:30", "titulo": "Mesas temáticas de investigación", "eje": "General", "descripcion": "Presentación y discusión de avances organizados por eje temático." },
-        { "hora": "12:30 – 13:30", "titulo": "Receso", "eje": "General", "descripcion": "Pausa para el intercambio informal entre participantes." },
-        { "hora": "13:30 – 15:00", "titulo": "Presentación de avances de tesis · Bloque I", "eje": "Ambiente y territorio", "descripcion": "Avances de investigación sobre servicios ambientales y resiliencia territorial." },
-        { "hora": "15:15 – 16:45", "titulo": "Retroalimentación entre pares y docentes", "eje": "Gestión socioambiental", "descripcion": "Diálogo constructivo sobre metodologías y resultados preliminares." }
+        {
+          "hora": "09:00 – 09:30",
+          "titulo": "Registro y bienvenida",
+          "eje": "General",
+          "descripcion": "Recepción de participantes y palabras de apertura a cargo del comité organizador."
+        },
+        {
+          "hora": "09:30 – 10:30",
+          "titulo": "Conferencia inaugural",
+          "eje": "General",
+          "descripcion": "Perspectiva sobre la investigación interdisciplinaria entre ambiente y ciudad."
+        },
+        {
+          "hora": "10:45 – 12:30",
+          "titulo": "Mesas temáticas de investigación",
+          "eje": "General",
+          "descripcion": "Presentación y discusión de avances organizados por eje temático."
+        },
+        {
+          "hora": "12:30 – 13:30",
+          "titulo": "Receso",
+          "eje": "General",
+          "descripcion": "Pausa para el intercambio informal entre participantes."
+        },
+        {
+          "hora": "13:30 – 15:00",
+          "titulo": "Presentación de avances de tesis · Bloque I",
+          "eje": "Ambiente y territorio",
+          "descripcion": "Avances de investigación sobre servicios ambientales y resiliencia territorial."
+        },
+        {
+          "hora": "15:15 – 16:45",
+          "titulo": "Retroalimentación entre pares y docentes",
+          "eje": "Gestión socioambiental",
+          "descripcion": "Diálogo constructivo sobre metodologías y resultados preliminares."
+        }
       ]
     },
     {
       "dia": 2,
       "etiqueta": "Día 2",
       "sesiones": [
-        { "hora": "09:00 – 10:30", "titulo": "Presentación de avances de tesis · Bloque II", "eje": "Ordenamiento urbano", "descripcion": "Planeación, diseño urbano y usos del suelo." },
-        { "hora": "10:45 – 12:15", "titulo": "Taller metodológico", "eje": "Cartografía y SIG", "descripcion": "Herramientas de análisis espacial y representación territorial." },
-        { "hora": "12:15 – 13:15", "titulo": "Receso", "eje": "General", "descripcion": "Pausa para el intercambio informal entre participantes." },
-        { "hora": "13:15 – 14:30", "titulo": "Panel de tesistas y docentes", "eje": "Cambio climático", "descripcion": "Adaptación, mitigación y riesgos en las ciudades." },
-        { "hora": "14:30 – 15:30", "titulo": "Conclusiones y cierre", "eje": "General", "descripcion": "Síntesis del encuentro y acuerdos para las siguientes etapas." }
+        {
+          "hora": "09:00 – 10:30",
+          "titulo": "Presentación de avances de tesis · Bloque II",
+          "eje": "Ordenamiento urbano",
+          "descripcion": "Planeación, diseño urbano y usos del suelo."
+        },
+        {
+          "hora": "10:45 – 12:15",
+          "titulo": "Taller metodológico",
+          "eje": "Cartografía y SIG",
+          "descripcion": "Herramientas de análisis espacial y representación territorial."
+        },
+        {
+          "hora": "12:15 – 13:15",
+          "titulo": "Receso",
+          "eje": "General",
+          "descripcion": "Pausa para el intercambio informal entre participantes."
+        },
+        {
+          "hora": "13:15 – 14:30",
+          "titulo": "Panel de tesistas y docentes",
+          "eje": "Cambio climático",
+          "descripcion": "Adaptación, mitigación y riesgos en las ciudades."
+        },
+        {
+          "hora": "14:30 – 15:30",
+          "titulo": "Conclusiones y cierre",
+          "eje": "General",
+          "descripcion": "Síntesis del encuentro y acuerdos para las siguientes etapas."
+        }
       ]
     }
   ],
@@ -54,9 +128,21 @@
     "mensaje": "La asignación del registro la coordinan las y los docentes de cada licenciatura."
   },
   "comite": {
-    "LCAZU": { "nombre": "Licenciatura en Ciencias Ambientales para Zonas Urbanas", "integrantes": null, "correo": null },
-    "LUDM": { "nombre": "Licenciatura en Urbanismo y Desarrollo Metropolitano", "integrantes": null, "correo": null },
-    "UNRC": { "nombre": "Universidad Nacional Rosario Castellanos", "ciudad": "Ciudad de México", "correo": null }
+    "LCAZU": {
+      "nombre": "Licenciatura en Ciencias Ambientales para Zonas Urbanas",
+      "integrantes": null,
+      "correo": null
+    },
+    "LUDM": {
+      "nombre": "Licenciatura en Urbanismo y Desarrollo Metropolitano",
+      "integrantes": null,
+      "correo": null
+    },
+    "UNRC": {
+      "nombre": "Universidad Nacional Rosario Castellanos",
+      "ciudad": "Ciudad de México",
+      "correo": null
+    }
   },
   "advertencias": [
     "Agenda ilustrativa: días, horarios y participantes por confirmar.",
