@@ -834,7 +834,8 @@
 
     <script>
         // --- 3D BACKGROUND ENGINE ---
-        let scene, camera, renderer, cityGroup, particles;
+        let scene, camera, renderer, cityGroup, cityMesh, cityData, particles;
+        const dummy = new THREE.Object3D();
         let mouseX = 0, mouseY = 0;
 
         // Ripple Variables
@@ -857,7 +858,7 @@
                 alpha: true
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
             renderer.toneMapping = THREE.ReinhardToneMapping;
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
@@ -879,34 +880,29 @@
             pointLight2.position.set(-10, 10, 10);
             scene.add(pointLight2);
 
-            // Create Procedural City
+            // Create Procedural City (una sola InstancedMesh: 1 draw call en vez de 625)
             cityGroup = new THREE.Group();
             const gridCount = 25;
-
+            const total = gridCount * gridCount;
+            const palette = [0xB58A32, 0x4F8F68, 0x690E31].map(c => new THREE.Color(c));
+            cityMesh = new THREE.InstancedMesh(
+                new THREE.BoxGeometry(1, 1, 1),
+                new THREE.MeshStandardMaterial({ transparent: true, opacity: 0.8, roughness: 0.2, metalness: 0.8 }),
+                total
+            );
+            cityData = [];
+            let n = 0;
             for (let x = 0; x < gridCount; x++) {
                 for (let z = 0; z < gridCount; z++) {
                     const h = Math.random() * 6 + 1;
                     const w = Math.random() * 0.5 + 0.5;
-                    const geometry = new THREE.BoxGeometry(w, h, w);
-
-                    const color = Math.random() > 0.6 ? 0xB58A32 : (Math.random() > 0.5 ? 0x4F8F68 : 0x690E31);
-                    const material = new THREE.MeshStandardMaterial({
-                        color: color,
-                        transparent: true,
-                        opacity: 0.8,
-                        roughness: 0.2,
-                        metalness: 0.8
-                    });
-
-                    const cube = new THREE.Mesh(geometry, material);
-                    cube.position.set(
-                        x * 2 - (gridCount * 2 / 2),
-                        h / 2,
-                        z * 2 - (gridCount * 2 / 2)
-                    );
-                    cityGroup.add(cube);
+                    const r = Math.random();
+                    cityMesh.setColorAt(n, r > 0.6 ? palette[0] : (r > 0.3 ? palette[1] : palette[2]));
+                    cityData.push({ x: x * 2 - gridCount, z: z * 2 - gridCount, h, w });
+                    n++;
                 }
             }
+            cityGroup.add(cityMesh);
             scene.add(cityGroup);
 
             // Ground Plane
@@ -947,6 +943,7 @@
 
         function animate() {
             requestAnimationFrame(animate);
+            if (document.hidden) return;
 
             // Smooth rotation based on mouse
             const targetRotX = mouseY * 0.0005;
@@ -957,23 +954,17 @@
 
             // Building Reactivity
             const time = Date.now() * 0.001;
-            cityGroup.children.forEach((cube, i) => {
-                const dist = Math.sqrt(
-                    Math.pow(cube.position.x - (mouseX * 0.02), 2) +
-                    Math.pow(cube.position.z - (mouseY * 0.02), 2)
-                );
+            for (let i = 0; i < cityData.length; i++) {
+                const d = cityData[i];
+                const dist = Math.hypot(d.x - mouseX * 0.02, d.z - mouseY * 0.02);
                 const scale = Math.max(1, 1.5 - dist * 0.1);
-                cube.scale.set(1, scale, 1);
-
-                // Emissive pulse effect
-                if (cube.material.emissive) {
-                    const pulse = Math.sin(time * 2 + i) * 0.2 + 0.3;
-                    cube.material.emissiveIntensity = pulse;
-                }
-
-                // Subtle breathing effect
-                cube.position.y = (cube.geometry.parameters.height / 2) + Math.sin(time + i) * 0.1;
-            });
+                const h = d.h * scale;
+                dummy.position.set(d.x, h / 2 + Math.sin(time + i) * 0.1, d.z);
+                dummy.scale.set(d.w, h, d.w);
+                dummy.updateMatrix();
+                cityMesh.setMatrixAt(i, dummy.matrix);
+            }
+            cityMesh.instanceMatrix.needsUpdate = true;
 
             // Particle animation
             particles.rotation.y += 0.001;
@@ -984,28 +975,31 @@
 
             renderer.render(scene, camera);
 
-            // Update Ripple
-            if (rippleRenderer) {
-                rippleUniforms.u_time.value = time;
-                rippleUniforms.u_mouse.value.set(
-                    (mouseX / window.innerWidth) + 0.5,
-                    (mouseY / window.innerHeight) + 0.5
-                );
-                rippleRenderer.render(rippleScene, rippleCamera);
-            }
+            // Update Ripple (solo se dibuja mientras haya ondas activas)
+            updateRipple(time);
         }
+
+        // Ondas de agua ligeras: render a media resolución y solo con ondas vivas
+        const MAX_DROPS = 10, DROP_LIFE = 2.4;
+        const drops = [];            // {x, y, t}
+        let lastDrop = { x: -999, y: -999 }, rippleActive = false;
 
         function initRipple() {
             rippleScene = new THREE.Scene();
             rippleCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-            rippleRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-            rippleRenderer.setSize(window.innerWidth, window.innerHeight);
+            rippleRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: 'low-power' });
+            rippleRenderer.setPixelRatio(0.5);
+            rippleRenderer.setSize(window.innerWidth, window.innerHeight, false);
+            rippleRenderer.domElement.style.cssText = 'width:100%;height:100%;display:block';
             document.getElementById('ripple-canvas').appendChild(rippleRenderer.domElement);
 
-            const geometry = new THREE.PlaneGeometry(2, 2);
+            rippleUniforms.u_drops = { value: Array.from({ length: MAX_DROPS }, () => new THREE.Vector3(0, 0, -99)) };
+            rippleUniforms.u_aspect = { value: window.innerWidth / window.innerHeight };
+
             rippleMaterial = new THREE.ShaderMaterial({
                 uniforms: rippleUniforms,
                 transparent: true,
+                depthTest: false,
                 vertexShader: `
                     varying vec2 vUv;
                     void main() {
@@ -1014,43 +1008,73 @@
                     }
                 `,
                 fragmentShader: `
+                    precision mediump float;
                     uniform float u_time;
-                    uniform vec2 u_mouse;
-                    uniform vec2 u_resolution;
-                    uniform float u_intensity;
+                    uniform float u_aspect;
+                    uniform vec3 u_drops[${MAX_DROPS}];
                     varying vec2 vUv;
 
                     void main() {
-                        vec2 uv = vUv;
-                        float dist = distance(uv, u_mouse);
-
-                        // Onda más pronunciada y visible
-                        float ripple = sin(dist * 15.0 - u_time * 3.0) * 0.05 * exp(-dist * 2.0);
-
-                        // Difuminado más amplio y suave
-                        float blur = smoothstep(0.5, 0.0, dist) * 0.15;
-
-                        // Color más vibrante y brillante
-                        vec3 color = vec3(0.8, 0.9, 1.0) * ripple * 5.0;
-                        gl_FragColor = vec4(color, blur);
+                        vec2 p = vec2(vUv.x * u_aspect, vUv.y);
+                        float light = 0.0;
+                        float glow = 0.0;
+                        for (int i = 0; i < ${MAX_DROPS}; i++) {
+                            vec3 d = u_drops[i];
+                            float age = u_time - d.z;
+                            if (age < 0.0 || age > ${DROP_LIFE.toFixed(1)}) continue;
+                            float fade = 1.0 - age / ${DROP_LIFE.toFixed(1)};
+                            float dist = distance(p, vec2(d.x * u_aspect, d.y));
+                            float radius = age * 0.14;
+                            float ring = exp(-pow((dist - radius) / 0.018, 2.0));
+                            float ring2 = exp(-pow((dist - radius * 0.65) / 0.03, 2.0)) * 0.5;
+                            light += (ring + ring2) * fade * fade;
+                            glow += exp(-dist * 9.0) * fade * fade * 0.35;
+                        }
+                        float a = clamp(light * 0.35 + glow * 0.18, 0.0, 0.5);
+                        gl_FragColor = vec4(vec3(0.75, 0.88, 1.0) * a, a);
                     }
                 `
             });
+            rippleScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), rippleMaterial));
+        }
 
-            const mesh = new THREE.Mesh(geometry, rippleMaterial);
-            rippleScene.add(mesh);
+        function addDrop(clientX, clientY) {
+            const x = clientX / window.innerWidth, y = 1 - clientY / window.innerHeight;
+            if (drops.length >= MAX_DROPS) drops.shift();
+            drops.push({ x, y, t: performance.now() * 0.001 });
+            rippleActive = true;
+        }
+
+        function updateRipple(time) {
+            if (!rippleRenderer || !rippleActive) return;
+            const now = performance.now() * 0.001;
+            while (drops.length && now - drops[0].t > DROP_LIFE) drops.shift();
+            const arr = rippleUniforms.u_drops.value;
+            for (let i = 0; i < MAX_DROPS; i++) {
+                const d = drops[i];
+                if (d) arr[i].set(d.x, d.y, d.t); else arr[i].set(0, 0, -99);
+            }
+            rippleUniforms.u_time.value = now;
+            rippleRenderer.render(rippleScene, rippleCamera);
+            if (!drops.length) rippleActive = false; // último frame limpio
         }
 
         // --- UI INTERACTIONS ---
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX - window.innerWidth / 2;
             mouseY = e.clientY - window.innerHeight / 2;
-        });
+            if (Math.hypot(e.clientX - lastDrop.x, e.clientY - lastDrop.y) > 45) {
+                lastDrop = { x: e.clientX, y: e.clientY };
+                addDrop(e.clientX, e.clientY);
+            }
+        }, { passive: true });
 
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            rippleRenderer.setSize(window.innerWidth, window.innerHeight, false);
+            rippleUniforms.u_aspect.value = window.innerWidth / window.innerHeight;
         });
 
         window.addEventListener('scroll', () => {
