@@ -145,6 +145,9 @@
 @media (max-width: 900px) {
     .cl-body { flex-direction: column; }
     .cl-drawer { width: 100%; max-height: none; }
+    .cl-body { align-items: stretch; }
+    .cl-mapcol { width: 100%; max-width: 100%; }
+    .cl-stage { max-width: 100%; }
     .cl-clockbox { margin-left: 0; width: 100%; justify-content: flex-start; }
 }
 @media (max-width: 600px) {
@@ -157,4 +160,29 @@
     .cl-guide ol { font-size: 0.78rem; }
     .cl-coach { flex-direction: column; align-items: stretch; font-size: 0.84rem; }
     .cl-views span { width: 100%; }
+}
+
+/* móvil: mapa ampliable y botones táctiles */
+.cl-zoombtn { display: none; }
+.cl-stage.zoom { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+.cl-stage.zoom canvas { max-width: none; }
+@media (max-width: 900px) {
+    .cl-zoombtn { display: inline-block; }
+    .cl-btn, .cl-tabs button, .cl-views button, .cl-speed button, .cl-missions button { min-height: 42px; }
+    .cl-tabs { width: 100%; }
+    .cl-tabs button { flex: 1 1 auto; text-align: center; }
+    .cl-toolgrid button, .cl-evgrid button { min-height: 4.8rem; }
+    .cl-sl input[type=range] { height: 28px; }
+}
+@media (max-width: 600px) {
+    .cl-bar { gap: 0.4rem; }
+    .cl-bar .cl-btn { flex: 1 1 auto; }
+    .cl-go { order: -1; flex-basis: 100%; }
+    .cl-kpis { gap: 0.35rem; }
+    .cl-k small { font-size: 0.6rem; }
+    .cl-coach { font-size: 0.82rem; padding: 0.65rem 0.8rem; }
+    .cl-steps { gap: 0.3rem; } .cl-steps span { font-size: 0.72rem; padding-right: 0.55rem; }
+    .cl-goal { padding: 0.8rem 0.9rem; } .cl-goal p { font-size: 0.82rem; }
+    .cl-info { font-size: 0.78rem; }
+    .cl-dh b { font-size: 0.95rem; } .cl-dh button { font-size: 1.2rem; padding: 0.5rem 0.9rem; }
 }

@@ -10,7 +10,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="color-scheme" content="dark">
     <title>2do Encuentro de Presentación de Avances de Trabajo Terminal: LUDM-LCAZU | UNRC</title>
 
     <!-- Google Fonts -->
@@ -18,7 +20,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="lab/city-lab.css?v=1793242766">
+    <link rel="stylesheet" href="lab/city-lab.css?v=1793245145">
     <style>
         :root {
             --primary: #690E31;
@@ -39,6 +41,9 @@
             margin: 0;
             padding: 0;
         }
+
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 76px; }
+        a, button, summary { -webkit-tap-highlight-color: rgba(181, 138, 50, 0.25); touch-action: manipulation; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -62,6 +67,7 @@
             left: 0;
             width: 100%;
             height: 100vh;
+            height: 100dvh;
             z-index: -2;
             pointer-events: none; /* Deja que los clicks pasen al contenido */
         }
@@ -78,6 +84,7 @@
 
         header.scrolled {
             background: rgba(10, 10, 10, 0.8);
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             padding: 0.8rem 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -126,6 +133,7 @@
             left: 0;
             width: 100%;
             height: 100vh;
+            height: 100dvh;
             z-index: -1;
             pointer-events: none;
         }
@@ -148,9 +156,18 @@
             color: var(--secondary);
         }
 
+
+        /* --- Menú móvil --- */
+        .nav-toggle { display: none; width: 46px; height: 46px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); cursor: pointer; padding: 0; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+        .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: transform .3s, opacity .3s; }
+        .nav-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
+        .nav-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
         /* --- Hero Section --- */
         .hero {
             min-height: 100vh;
+            min-height: 100svh;
             display: flex;
             align-items: center;
             position: relative;
@@ -292,6 +309,7 @@
             border-left: 6px solid var(--secondary);
             font-style: italic;
             font-size: 1.3rem;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             transition: var(--transition);
         }
@@ -314,6 +332,7 @@
             border: 1px solid rgba(255,255,255,0.1);
             text-align: center;
             transition: var(--transition);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
 
@@ -345,6 +364,7 @@
             border-radius: 40px;
             padding: 4rem;
             border: 1px solid var(--glass-border);
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             transition: var(--transition);
         }
@@ -463,6 +483,9 @@
             margin-bottom: 3rem;
         }
 
+        .footer-col { min-width: 0; }
+        .brand-logo { max-width: 100%; }
+
         .footer-col h4 {
             color: var(--secondary);
             margin-bottom: 1.5rem;
@@ -554,9 +577,18 @@
         }
 
         @media (max-width: 992px) {
-            .sobre-grid { grid-template-columns: 1fr; text-align: center; }
-            .nav-links { display: none; }
+            .sobre-grid { grid-template-columns: 1fr; text-align: left; gap: 2.5rem; }
+            .sobre-grid > .reveal { text-align: center; }
             .hero h1 { font-size: 3.5rem; }
+            .section { padding: 90px 0; }
+            .section-center h2 { font-size: 2.6rem; }
+            .nav-toggle { display: flex; }
+            header { padding: 0.9rem 0; }
+            .nav-links { position: fixed; top: 0; left: 0; right: 0; flex-direction: column; gap: 0; padding: 84px 1.25rem 1.25rem; background: rgba(10,10,10,0.97); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.12); transform: translateY(-110%); transition: transform .35s cubic-bezier(.2,.8,.2,1); z-index: -1; max-height: 100vh; overflow-y: auto; visibility: hidden; }
+            .nav-open .nav-links { transform: none; visibility: visible; }
+            .nav-links a { font-size: 1rem; padding: 1rem 0.2rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+            .nav-links a:last-child { border-bottom: 0; }
+            .nav-wrap { position: relative; z-index: 2; }
         }
 
         @media (max-width: 600px) {
@@ -575,11 +607,70 @@
             .timeline-item:hover { transform: none; }
             .timeline-content { padding: 1.1rem 1.2rem; }
             .timeline-content h4 { font-size: 1.15rem; }
-            .btn-group { flex-wrap: wrap; gap: 0.8rem; }
+            .btn-group { gap: 0.8rem; }
+            .section { padding: 64px 0; }
+            .section-center { margin-bottom: 2.2rem; }
+            .section-center h2 { font-size: 2rem; margin-bottom: 1rem; }
+            .eyebrow { font-size: 0.74rem; letter-spacing: 0.14rem; margin-bottom: 1rem; }
+            .sobre-text h2 { font-size: 1.9rem; }
+            .sobre-text p { font-size: 1rem; }
+            .highlight-box { padding: 1.4rem; font-size: 1.05rem; border-left-width: 4px; }
+            .highlight-box:hover { transform: none; }
+            .ejes-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .eje-card { padding: 1.6rem 1.3rem; border-radius: 22px; }
+            .eje-icon { font-size: 2.2rem; margin-bottom: 0.7rem; }
+            .eje-card h3 { font-size: 1.35rem; margin-bottom: 0.5rem; }
+            .eje-card p { font-size: 1rem; }
+            .programa-wrap { padding: 1.1rem 0.8rem; border-radius: 22px; }
+            .programa-wrap:hover { transform: none; }
+            .program-tabs { gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+            .tab { padding: 0.7rem 1rem; font-size: 0.85rem; min-height: 44px; }
+            .timeline-item { margin-bottom: 1.4rem; }
+            .timeline-time { font-size: 1rem; }
+            .timeline-content { border-radius: 0 14px 14px 0; padding: 0.9rem 1rem; }
+            .timeline-content h4 { font-size: 1.02rem; }
+            .timeline-content p { font-size: 0.92rem; }
+            details summary { padding: 1.1rem 1rem; min-height: 48px; }
+            .hero { padding-top: 90px; padding-bottom: 40px; }
+            .hero-place { font-size: 0.85rem; padding: 0.7rem 0.9rem; margin-bottom: 1.5rem; }
+            .lead { font-size: 1.05rem; margin-bottom: 1.6rem; }
+            .btn-group { flex-direction: column; align-items: stretch; }
+            .btn-group .btn, #lab-toggle { text-align: center; width: 100%; max-width: 340px; margin: 0 auto; min-height: 50px; }
+            .footer-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.6rem 1.2rem; }
+            .footer-grid > .footer-col:first-child { grid-column: 1 / -1; }
+            .footer-grid > .footer-col:last-child { grid-column: 1 / -1; }
+            .brand-logo { max-width: 100%; }
+            .footer-col p { overflow-wrap: anywhere; }
+            .footer-col h4 { margin-bottom: 0.8rem; font-size: 0.95rem; }
+            .footer-col p { font-size: 0.85rem; }
+            footer { padding: 3rem 0 calc(1.5rem + env(safe-area-inset-bottom)); }
+            .brand-logo, .brand-logo.sq { height: 60px; }
+            .wordmark { font-size: 2rem; line-height: 60px; height: 60px; }
+            .credits { padding: 2rem 0.5rem 0.4rem; }
+            .credits-names { font-size: 0.98rem; }
+            .lab-close { margin: 0 0 1rem; width: 100%; }
             .credits-names { flex-direction: column; gap: 0.5rem; }
             .credits-names i { display: none; }
             .btn { padding: 1rem 1.6rem; font-size: 0.85rem; }
         }
+
+        @media (max-width: 380px) {
+            .footer-grid { grid-template-columns: minmax(0, 1fr); }
+            .hero h1.h1-long { font-size: 1.85rem; }
+            .section-center h2 { font-size: 1.75rem; }
+            .nav-wrap { padding: 0 0.8rem; }
+        }
+        /* pantallas táctiles: sin efectos de hover que "se quedan pegados" */
+        @media (hover: none) {
+            .eje-card:hover, .programa-wrap:hover, .highlight-box:hover, .timeline-item:hover { transform: none; }
+        }
+        /* horizontal en celular */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .hero { min-height: auto; padding-top: 100px; padding-bottom: 50px; }
+            .section { padding: 60px 0; }
+        }
+        .no-3d body { background: radial-gradient(900px 600px at 80% 0%, rgba(105,14,49,.45), transparent 60%), radial-gradient(800px 600px at 0% 60%, rgba(79,143,104,.18), transparent 60%), #0a0a0a; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } .reveal { opacity: 1; transform: none; } }
     </style>
 </head>
 <body>
@@ -593,7 +684,8 @@
                 <img src="assets/logos/logo-unrc.svg" alt="UNRC">
                 <span>2do Encuentro LUDM-LCAZU</span>
             </a>
-            <nav class="nav-links">
+            <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+            <nav class="nav-links" id="nav-links">
                 <a href="#sobre">Sobre</a>
                 <a href="#laboratorio">Laboratorio</a>
                 <a href="#ejes">Ejes</a>
@@ -691,9 +783,9 @@
             </div>
             <div class="programa-wrap reveal">
                     <div class="program-tabs">
-                    <button class="tab active" onclick="switchDay(1)">Lunes 23</button>
-                    <button class="tab" onclick="switchDay(2)">Martes 24</button>
-                    <button class="tab" onclick="switchDay(3)">Miércoles 25</button>
+                    <button class="tab active" onclick="switchDay(1, this)">Lunes 23</button>
+                    <button class="tab" onclick="switchDay(2, this)">Martes 24</button>
+                    <button class="tab" onclick="switchDay(3, this)">Miércoles 25</button>
                 </div>
                 <div id="day1" class="timeline">
                     <div class="timeline-item">
@@ -964,18 +1056,19 @@
     <script>
         // --- 3D BACKGROUND ENGINE ---
         let scene, camera, renderer, cityGroup, cityMesh, cityData, particles;
-        const dummy = new THREE.Object3D();
+        const dummy = (typeof THREE !== 'undefined') ? new THREE.Object3D() : null;
         let mouseX = 0, mouseY = 0;
 
         // Ripple Variables
         let rippleScene, rippleCamera, rippleRenderer;
         let rippleMesh, rippleMaterial;
-        let rippleUniforms = {
-            u_time: { value: 0 },
-            u_mouse: { value: new THREE.Vector2(0, 0) },
-            u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-            u_intensity: { value: 0.02 } // Efecto ligero
-        };
+        let ok3D = false;
+        let rippleUniforms = { u_time: { value: 0 } };
+        if (typeof THREE !== 'undefined') {
+            rippleUniforms.u_mouse = { value: new THREE.Vector2(0, 0) };
+            rippleUniforms.u_resolution = { value: new THREE.Vector2(window.innerWidth, window.innerHeight) };
+            rippleUniforms.u_intensity = { value: 0.02 };
+        }
 
         function init3D() {
             scene = new THREE.Scene();
@@ -1197,8 +1290,18 @@
                 addDrop(e.clientX, e.clientY);
             }
         }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+            const t = e.touches[0]; if (!t || !ok3D) return;
+            if (Math.hypot(t.clientX - lastDrop.x, t.clientY - lastDrop.y) > 45) { lastDrop = { x: t.clientX, y: t.clientY }; addDrop(t.clientX, t.clientY); }
+        }, { passive: true });
 
+        let lastW = window.innerWidth, lastH = window.innerHeight;
         window.addEventListener('resize', () => {
+            if (!ok3D) return;
+            // en móviles la barra del navegador cambia la altura al hacer scroll: no re-dimensionar por eso
+            const w = window.innerWidth, h = window.innerHeight;
+            if (w === lastW && Math.abs(h - lastH) < 160) return;
+            lastW = w; lastH = h;
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -1209,6 +1312,7 @@
         window.addEventListener('scroll', () => {
             const header = document.getElementById('main-header');
             header.classList.toggle('scrolled', window.scrollY > 50);
+            if (!ok3D) return;
 
             // Cinematic Zoom & Tilt
             const scrollPerc = window.scrollY / (document.body.scrollHeight - window.innerHeight);
@@ -1221,29 +1325,55 @@
             cityGroup.rotation.y += scrollPerc * 0.01;
         });
 
-        function switchDay(day) {
+        function switchDay(day, btn) {
             const tabs = document.querySelectorAll('.tab');
             const d1 = document.getElementById('day1');
             const d2 = document.getElementById('day2');
             const d3 = document.getElementById('day3');
             tabs.forEach(t => t.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            const cur = btn || (window.event && window.event.currentTarget) || tabs[day - 1];
+            if (cur) cur.classList.add('active');
             d1.style.display = day === 1 ? 'block' : 'none';
             d2.style.display = day === 2 ? 'block' : 'none';
             d3.style.display = day === 3 ? 'block' : 'none';
         }
 
         // Reveal animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
-        }, { threshold: 0.1 });
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('active'); observer.unobserve(e.target); } });
+            }, { threshold: 0.05, rootMargin: '0px 0px -5% 0px' });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        } else {
+            document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+        }
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-
-        // Init everything
-        init3D();
-        animate();
+        // Init everything: si el dispositivo no soporta WebGL, la página sigue funcionando sin el fondo 3D
+        try {
+            if (typeof THREE === 'undefined') throw new Error('three.js no disponible');
+            const t = document.createElement('canvas');
+            if (!(t.getContext('webgl2') || t.getContext('webgl') || t.getContext('experimental-webgl'))) throw new Error('WebGL no disponible');
+            init3D();
+            ok3D = true;
+            animate();
+        } catch (err) {
+            console.warn('Fondo 3D desactivado:', err.message);
+            document.documentElement.classList.add('no-3d');
+            ['canvas-container', 'ripple-canvas'].forEach(id => { const n = document.getElementById(id); if (n) n.innerHTML = ''; });
+        }
+    </script>
+    <script>
+        // Menú móvil
+        (function () {
+            const btn = document.getElementById('nav-toggle'), header = document.getElementById('main-header');
+            if (!btn) return;
+            function set(open) { header.classList.toggle('nav-open', open); btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú'); document.body.style.overflow = open ? 'hidden' : ''; }
+            btn.addEventListener('click', () => set(!header.classList.contains('nav-open')));
+            document.querySelectorAll('#nav-links a').forEach(a => a.addEventListener('click', () => set(false)));
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') set(false); });
+            window.addEventListener('resize', () => { if (innerWidth > 992) set(false); });
+        })();
     </script>
     <script>
         // Abrir / cerrar el Laboratorio Urbano
@@ -1270,6 +1400,6 @@
             if (location.hash === '#laboratorio') setLab(true, false);
         })();
     </script>
-    <script src="lab/city-lab.js?v=1793242766"></script>
+    <script src="lab/city-lab.js?v=1793245145"></script>
 </body>
 </html>

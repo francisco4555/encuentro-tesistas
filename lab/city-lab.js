@@ -572,6 +572,7 @@
             <div class="cl-bar">
                 <button class="cl-btn cl-go" id="cl-go" title="Inicia o pausa el paso del tiempo">▶ Iniciar simulación</button>
                 <button class="cl-btn" id="cl-step" title="Avanza una hora">⏭ 1 hora</button>
+                <button class="cl-btn cl-zoombtn" id="cl-zoom" title="Agranda el mapa para tocar con más precisión">🔍 Ampliar mapa</button>
                 <button class="cl-btn" id="cl-setup" title="Vuelve a generar la ciudad de esta misión">↺ Reiniciar</button>
                 <span class="cl-speed" title="Velocidad de la simulación"><button data-s="4">🐢</button><button data-s="8" class="on">1×</button><button data-s="16">2×</button><button data-s="30">4×</button></span>
                 <span class="cl-clockbox"><span id="cl-clock">Día 1 · 08:00</span><span id="cl-hud" class="cl-hud"></span></span>
@@ -726,7 +727,7 @@
     }
     root.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => {
         tool = b.dataset.tool; root.querySelectorAll('[data-tool]').forEach(x => x.classList.toggle('on', x === b));
-        ui.canvas.style.touchAction = tool === 'inspect' ? 'pan-y' : 'none';
+        ui.canvas.style.touchAction = tool === 'inspect' ? (zoomed ? 'pan-x pan-y' : 'pan-y') : 'none';
         ui.canvas.style.cursor = tool === 'inspect' ? 'crosshair' : 'copy';
         ui.guide.style.display = 'none'; updateToolDesc(); updateInfo();
     }));
@@ -740,6 +741,12 @@
     });
     $('cl-step').addEventListener('click', () => { if (!M.done) { step(); setGoLabel(); } ui.guide.style.display = 'none'; });
     $('cl-setup').addEventListener('click', () => loadMission(M.id));
+    $('cl-zoom').addEventListener('click', () => {
+        zoomed = !zoomed; ui.canvas.parentElement.classList.toggle('zoom', zoomed);
+        $('cl-zoom').textContent = zoomed ? '🔍 Reducir mapa' : '🔍 Ampliar mapa';
+        ui.canvas.style.touchAction = tool === 'inspect' ? (zoomed ? 'pan-x pan-y' : 'pan-y') : 'none';
+        resize(); if (zoomed) toast('Mapa ampliado: con 🔍 Inspeccionar puedes desplazarlo con el dedo');
+    });
     $('cl-help').addEventListener('click', () => { ui.guide.style.display = ''; });
     $('cl-guide-ok').addEventListener('click', () => { ui.guide.style.display = 'none'; });
     root.querySelectorAll('[data-s]').forEach(b => b.addEventListener('click', () => {
@@ -777,12 +784,14 @@
     const ctx = ui.canvas.getContext('2d');
     let cs = 12, dpr = 1, cssW = 0;
     function resize() {
-        const w = ui.canvas.parentElement.clientWidth; if (!w) return;
+        const base = ui.canvas.parentElement.clientWidth; if (!base) return;
+        const w = zoomed ? Math.min(Math.round(base * 2.2), 1800) : base;
         cssW = w; dpr = Math.min(window.devicePixelRatio || 1, 2);
         cs = w / COLS;
         ui.canvas.style.width = w + 'px'; ui.canvas.style.height = (cs * (ROWS + OYF)) + 'px';
         ui.canvas.width = Math.round(w * dpr); ui.canvas.height = Math.round(cs * (ROWS + OYF) * dpr);
     }
+    let zoomed = false;
     if (window.ResizeObserver) new ResizeObserver(resize).observe(ui.canvas.parentElement); else window.addEventListener('resize', resize);
 
     const COL = ['#2c3128', '#3b3f47', '#c2a46a', '#6f86b0', '#8a7468', '#3f8a55', '#2f6f9f', '#3c9a86', '#4fa57e', '#56626e', '#c0392b', '#22a7a7', '#4aa84a', '#3a312d'];
