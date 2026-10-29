@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="lab/city-lab.css?v=1793242766">
+    <link rel="stylesheet" href="lab/city-lab.css?v=1793243377">
     <style>
         :root {
             --primary: #690E31;
@@ -65,6 +65,18 @@
             z-index: -2;
             pointer-events: none; /* Deja que los clicks pasen al contenido */
         }
+
+
+        /* --- Efecto de cursor (toda la página) --- */
+        #fx-cursor { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 9998; pointer-events: none; }
+        .cur-ring, .cur-dot { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; border-radius: 50%; opacity: 0; will-change: transform; }
+        .cur-ring { width: 38px; height: 38px; margin: -19px 0 0 -19px; border: 1.5px solid rgba(181, 138, 50, 0.85); box-shadow: 0 0 18px rgba(181, 138, 50, 0.25), inset 0 0 12px rgba(79, 143, 104, 0.18); transition: width .25s, height .25s, margin .25s, background .25s, border-color .25s, opacity .3s; }
+        .cur-dot { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; background: var(--secondary); box-shadow: 0 0 10px rgba(181, 138, 50, 0.9); transition: opacity .3s; }
+        .cur-on .cur-ring, .cur-on .cur-dot { opacity: 1; }
+        .cur-hover .cur-ring { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: rgba(105, 14, 49, 0.28); border-color: rgba(165, 35, 96, 0.95); }
+        .cur-down .cur-ring { width: 26px; height: 26px; margin: -13px 0 0 -13px; border-color: rgba(107, 196, 127, 0.95); }
+        .cur-off .cur-ring, .cur-off .cur-dot { opacity: 0 !important; }
+        @media (pointer: coarse), (prefers-reduced-motion: reduce) { #fx-cursor, .cur-ring, .cur-dot { display: none !important; } }
 
         /* --- Navigation --- */
         header {
@@ -585,6 +597,8 @@
 <body>
 
     <div id="canvas-container"></div>
+    <canvas id="fx-cursor"></canvas>
+    <div class="cur-ring"></div><div class="cur-dot"></div>
     <div id="ripple-canvas"></div>
 
     <header id="main-header">
@@ -991,7 +1005,6 @@
             renderer.toneMapping = THREE.ReinhardToneMapping;
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            initRipple(); // Inicializar efecto de agua
 
             // Lighting
             const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
@@ -1192,18 +1205,12 @@
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX - window.innerWidth / 2;
             mouseY = e.clientY - window.innerHeight / 2;
-            if (Math.hypot(e.clientX - lastDrop.x, e.clientY - lastDrop.y) > 45) {
-                lastDrop = { x: e.clientX, y: e.clientY };
-                addDrop(e.clientX, e.clientY);
-            }
         }, { passive: true });
 
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            rippleRenderer.setSize(window.innerWidth, window.innerHeight, false);
-            rippleUniforms.u_aspect.value = window.innerWidth / window.innerHeight;
         });
 
         window.addEventListener('scroll', () => {
@@ -1246,6 +1253,64 @@
         animate();
     </script>
     <script>
+        // Efecto de cursor: anillo que lo sigue, estela luminosa y ondas de agua sobre toda la página
+        (function () {
+            if (matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const cv = document.getElementById('fx-cursor'), ctx = cv.getContext('2d');
+            const ring = document.querySelector('.cur-ring'), dot = document.querySelector('.cur-dot'), root = document.documentElement;
+            let W = 0, H = 0, mx = -100, my = -100, rx = -100, ry = -100, last = null, lastRip = null, running = false, seen = false;
+            const trail = [], rips = [];
+            const clamp01 = v => v < 0 ? 0 : (v > 1 ? 1 : v);
+            const PAL = [[181, 138, 50], [79, 143, 104], [165, 35, 96]];       // dorado · verde · guinda
+            function size() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+            size(); addEventListener('resize', size);
+            const color = t => { const k = (t / 700) % 3, i = Math.floor(k), f = k - i, a = PAL[i], b = PAL[(i + 1) % 3]; return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f].map(Math.round); };
+            const quiet = t => t && t.closest && t.closest('.cl-stage');       // sobre el mapa del laboratorio el efecto se apaga
+            function start() { if (!running) { running = true; requestAnimationFrame(loop); } }
+            addEventListener('mousemove', e => {
+                mx = e.clientX; my = e.clientY;
+                if (!seen) { seen = true; rx = mx; ry = my; ring.style.transform = 'translate(' + mx + 'px,' + my + 'px)'; dot.style.transform = ring.style.transform; root.classList.add('cur-on'); }
+                const t = e.target, off = quiet(t);
+                root.classList.toggle('cur-off', !!off);
+                root.classList.toggle('cur-hover', !!(t.closest && t.closest('a, button, summary, input, select, label, [onclick]')));
+                if (off) { last = null; return; }
+                const now = performance.now();
+                if (last) { const d = Math.hypot(mx - last.x, my - last.y), n = Math.max(1, Math.ceil(d / 10)); for (let i = 1; i <= n; i++) trail.push({ x: last.x + (mx - last.x) * i / n, y: last.y + (my - last.y) * i / n, t: now }); }
+                last = { x: mx, y: my };
+                if (!lastRip || Math.hypot(mx - lastRip.x, my - lastRip.y) > 80) { lastRip = { x: mx, y: my }; rips.push({ x: mx, y: my, t: now, big: false }); }
+                if (trail.length > 160) trail.splice(0, trail.length - 160);
+                start();
+            }, { passive: true });
+            addEventListener('mousedown', e => { root.classList.add('cur-down'); if (!quiet(e.target)) { rips.push({ x: e.clientX, y: e.clientY, t: performance.now(), big: true }); start(); } });
+            addEventListener('mouseup', () => root.classList.remove('cur-down'));
+            document.addEventListener('mouseleave', () => { root.classList.remove('cur-on'); seen = false; last = null; });
+            function loop() {
+                const now = performance.now();
+                ctx.clearRect(0, 0, W, H);
+                ctx.globalCompositeOperation = 'lighter';
+                while (trail.length && now - trail[0].t > 900) trail.shift();
+                for (const p of trail) {                                           // estela: puntos luminosos que se desvanecen
+                    const a = clamp01(1 - (now - p.t) / 900), c = color(p.t), r = 8 + 26 * a;
+                    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+                    g.addColorStop(0, 'rgba(' + c + ',' + (0.6 * a) + ')'); g.addColorStop(1, 'rgba(' + c + ',0)');
+                    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, 6.3); ctx.fill();
+                }
+                ctx.globalCompositeOperation = 'source-over';
+                for (let i = rips.length - 1; i >= 0; i--) {                       // ondas de agua
+                    const q = rips[i], life = q.big ? 1100 : 900, k = Math.max(0, (now - q.t) / life);
+                    if (k >= 1) { rips.splice(i, 1); continue; }
+                    const R = (q.big ? 120 : 74) * (1 - Math.pow(1 - k, 2)), a = (1 - k) * (q.big ? 0.8 : 0.6);
+                    ctx.lineWidth = 2.2 * (1 - k) + 0.8;
+                    ctx.strokeStyle = 'rgba(190,225,255,' + a + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, R, 0, 6.3); ctx.stroke();
+                    ctx.strokeStyle = 'rgba(107,196,127,' + (a * 0.7) + ')'; ctx.beginPath(); ctx.arc(q.x, q.y, R * 0.62, 0, 6.3); ctx.stroke();
+                }
+                rx += (mx - rx) * 0.2; ry += (my - ry) * 0.2;                      // el anillo sigue al cursor con suavidad
+                ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px)'; dot.style.transform = 'translate(' + mx + 'px,' + my + 'px)';
+                if (trail.length || rips.length || Math.hypot(mx - rx, my - ry) > 0.5) requestAnimationFrame(loop); else running = false;
+            }
+        })();
+    </script>
+    <script>
         // Abrir / cerrar el Laboratorio Urbano
         (function () {
             const lab = document.getElementById('laboratorio'), btn = document.getElementById('lab-toggle'), close = document.getElementById('lab-close');
@@ -1270,6 +1335,6 @@
             if (location.hash === '#laboratorio') setLab(true, false);
         })();
     </script>
-    <script src="lab/city-lab.js?v=1793242766"></script>
+    <script src="lab/city-lab.js?v=1793243377"></script>
 </body>
 </html>
