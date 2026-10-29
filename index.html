@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="lab/city-lab.css?v=1793238267">
+    <link rel="stylesheet" href="lab/city-lab.css?v=1793242651">
     <style>
         :root {
             --primary: #690E31;
@@ -482,6 +482,43 @@
 
         .footer-col p { margin-top: 10px; }
 
+        .credits {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary) 0%, #4d0a24 100%);
+            border: 1px solid rgba(181, 138, 50, 0.35);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 16px 40px rgba(105, 14, 49, 0.35);
+        }
+
+        .credits .credits-label {
+            display: block;
+            font-family: 'Fraunces', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.9rem;
+        }
+
+        .credits .credits-label::after {
+            content: '';
+            display: block;
+            width: 56px;
+            height: 2px;
+            background: var(--secondary);
+            margin: 0.7rem auto 0;
+            border-radius: 2px;
+        }
+
+        .credits .credits-name {
+            margin: 0.2rem 0 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 0.01em;
+        }
+
         .footer-bottom {
             text-align: center;
             font-size: 0.9rem;
@@ -894,6 +931,11 @@
                     <p>Licenciatura en Ciencias Ambientales para Zonas Urbanas</p>
                 </div>
             </div>
+            <div class="credits">
+                <span class="credits-label">Diseño, desarrollo e implementación del portal:</span>
+                <p class="credits-name">Mtro. José Francisco Romero Díaz</p>
+                <p class="credits-name">Dr. Israel Sandre Osorio</p>
+            </div>
             <div class="footer-bottom">
                 <p>© <span id="year"></span> · Boceto académico no oficial. Información sujeta a validación.</p>
             </div>
@@ -1213,6 +1255,6 @@
             if (location.hash === '#laboratorio') setLab(true, false);
         })();
     </script>
-    <script src="lab/city-lab.js?v=1793238267"></script>
+    <script src="lab/city-lab.js?v=1793242651"></script>
 </body>
 </html>
